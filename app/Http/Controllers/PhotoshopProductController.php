@@ -93,14 +93,21 @@ class PhotoshopProductController extends Controller
      $totalwork=$listproduct->count();
      $sku=$listproduct->where('id',$id);
      $rework=array('2','4','6','8','10');
+     $done=array('1','3','5','7','9','11');
+    
      $totalrework=0;
+     $totaldone=0;
      foreach($rework as $re)
      {
         $listproductcount=$listproduct->where('action_name',$re)->count();
         $totalrework+=$listproductcount;
      }
+     foreach($done as $re1)
+     {
+        $listproductcount1=$listproduct->where('action_name',$re1)->count();
+        $totaldone+=$listproductcount1;
+     }
     $product=photoshop_cache::productdetail($id);
-
-   return view('Photoshop/Product/view',compact('listproduct','listproduct1','totalwork','product','totalrework'));
+    return view('Photoshop/Product/view',compact('listproduct','listproduct1','totalwork','product','totalrework','totaldone'));
    }
 }

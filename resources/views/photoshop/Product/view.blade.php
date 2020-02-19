@@ -20,7 +20,7 @@
 @section('content')
 <main class="main-wrapper clearfix">
   <!-- Page Title Area -->
-  <div class="row page-title clearfix">
+ <div class="row page-title clearfix">
    Product Detail
       <!-- /.page-title-right -->
   </div>
@@ -70,8 +70,8 @@
 				<div class="widget-bg bg-color-scheme text-inverse">
 					<div class="widget-body clearfix">
 						<div class="widget-counter">
-							<h6>Total Status<small>Total Count</small></h6>
-							<h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">public</i>
+							<h6>Done<small>Total Done</small></h6>
+							<h3 class="h1"><span class="counter">{{$totaldone}}</span></h3><i class="material-icons list-icon">public</i>
 						</div>
 						<!-- /.widget-counter -->
 					</div>
@@ -111,7 +111,7 @@
                             </thead>
                             <tbody>
                     
-                 @foreach ($listproduct as $items)
+                 @foreach ($listproduct1 as $items)
                  <tr>
                     <td>{{$items->getProductdetail->sku}}</td>   
                      <td>{{$items->getDepartmentStatus->status_name}}</td>

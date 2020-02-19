@@ -628,3 +628,5 @@ Breadcrumbs::for('product_add',function($trail){
 	$trail->parent('dashboard');
 	$trail->push('Product Add', route('product_add'));
 });
+
+
