@@ -52,8 +52,8 @@ $user = Auth::user();
                           </div>
                       </div>
                       <?php
-if ($user->hasRole('Super Admin') || $user->hasRole('User Manager')) {
-	?>
+       if ($user->hasRole('Super Admin') || $user->hasRole('User Manager')) {
+	                  ?>
                       <div class="col-md-3">
                           <div class="form-group">
                                 <select class="text-uppercase" id="rolefilter" name="rolefilter">

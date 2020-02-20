@@ -36,4 +36,14 @@ class photography_product extends Model
    {
      return photography_product::where('id','=',$id)->delete();
    }
+
+   public static function validationuploadedProduct($data)
+   {
+       return photography_product::where($data)->exists();
+   }
+
+   public static function getFilterData($data)
+   {
+       return photography_product::where($data)->get();
+   }
 }

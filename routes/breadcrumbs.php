@@ -628,5 +628,7 @@ Breadcrumbs::for('product_add',function($trail){
 	$trail->parent('dashboard');
 	$trail->push('Product Add', route('product_add'));
 });
-
-
+Breadcrumbs::for('upload_list',function($trail){
+	$trail->parent('dashboard');
+	$trail->push('Product File List', route('upload_list'));
+});
