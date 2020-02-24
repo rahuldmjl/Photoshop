@@ -110,12 +110,11 @@
 											  
 											</div>
 											<div class="widget-body clearfix dataTable-length-top-0">
-												<form class="mr-b-30" method="post">
-													{{ csrf_field() }}
+												
 													<div class="row">
 														<div class="col-md-3">
 															<div class="form-group">
-																<select class="form-control" name="category">
+																<select class="form-control" name="category" id="category">
 																	<option value="">Select Category</option>
 																	@foreach($category as $cat){
 																		<option value={{$cat->entity_id}}>{{$cat->name}}</option>
@@ -126,7 +125,7 @@
 														</div>
 														<div class="col-md-3">
 															<div class="form-group">
-																<select class="form-control" name="color">
+																<select class="form-control" name="color" id="color">
 																	<option value="">Select Color</option>
 																	@foreach($color->unique('color') as $user){
 																		<option>{{$user->color}}</option>
@@ -138,7 +137,7 @@
 														
 														<div class="col-md-3">
 															<div class="form-group">
-																<select class="form-control" name="status">
+																<select class="form-control" name="status" id="status">
 																	<option value="">Select Status</option>
 																	<option value="0">Pending</option>
 																	<option value="1">Done</option>
@@ -147,16 +146,16 @@
 														</div>
 														<div class="col-md-3">
 															<div class="form-group">
-																<input class="form-control" id="myInput" name="sku" style="height: 43px;" placeholder="Sku Search" type="text">
+																<input class="form-control" id="sku" name="sku" style="height: 43px;" placeholder="Sku Search" type="text">
 															</div>
 														</div>
 														<div class="col-md-3">
 															<div class="form-group">
-																<input class="btn btn-primary" style="    height: 43px;" id="searchfilter"   type="submit" value="Apply">
+																<input class="btn btn-primary" style="height: 43px;" id="searchFilter"   type="submit" value="Apply">
 															</div>
 														</div>
 													</div>
-												</form>
+												
 						
 						
 											</div>
@@ -184,7 +183,7 @@
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0" data-toggle="datatables" >
+	                    <table class="table table-striped table-center word-break mt-0" id="Productlist" >
   							<thead>
   								<tr class="bg-primary">
   									<th>Sku</th>
@@ -196,8 +195,9 @@
   								</tr>
   							</thead>
   							<tbody>
-                     @foreach($list as $item)
-
+					
+                     @foreach($data as $key =>$item)
+									
 	                <tr>
 		                <td>{{$item->sku}}</td>
 	                    <td>{{$item->color}}</td>
@@ -257,6 +257,7 @@
   <!-- /.widget-list -->
 </main>
 <!-- /.main-wrappper -->
+<input type="hidden" id="userAjax" value="<?=URL::to('/Photoshop/Product/ajaxlist');?>">
 
 <style type="text/css">
 .form-control[readonly] {background-color: #fff;}
@@ -273,7 +274,7 @@
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"></script>
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
-<script>
+<script type="text/javascript">
 	$(document).on('click','.btn-delete-customer',function(){
 			var deleteUrl = $(this).data('href');
 		    swal({
@@ -291,7 +292,89 @@
 		    });
 		});
 	
+		var buttonCommon = {
+        exportOptions: {
+            format: {
+                body: function ( data, row, column, node ) {                    
+                    if (column === 3) {
+                      data = data.replace(/(&nbsp;|<([^>]+)>)/ig, "");
+                    }
+                    return data;
+                }
+            }
+        }
+	};
 
+	var table = $('#Productlist').DataTable({
+		"dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
+  "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
+  "buttons": [
+	$.extend( true, {}, buttonCommon, {
+      extend: 'csv',
+      footer: false,
+      title: 'Photography-product-list',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2,3],
+          orthogonal: 'export'
+      }
+    }),
+	$.extend( true, {}, buttonCommon, {
+      extend: 'excel',
+      footer: false,
+      title: 'Photography-product-list',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2,3],
+          orthogonal: 'export'
+      }
+    })
+  ],
+  "language": {
+    "search": "",
+    "infoEmpty": "No matched records found",
+    "zeroRecords": "No matched records found",
+    "emptyTable": "No data available in table",
+    /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
+  },
+  "order": [[ 0, "desc" ]],
+  "deferLoading": <?=$datacount?>,
+  "processing": true,
+  "serverSide": true,
+  "searching": false,
+  "serverMethod": "post",
+  "ajax":{
+    "url": $("#userAjax").val(),
+    "data": function(data, callback){
+		data._token = "{{ csrf_token() }}";
+		 showLoader();
+	  var sku = $('#sku').val();
+      if(sku != ''){
+        data.sku = sku;
+      }
+	  var category = $('#category').children("option:selected").val();
+      if(category != ''){
+        data.category = category;
+      }
+	  var color = $('#color').children("option:selected").val();
+      if(color != ''){
+        data.color = color;
+      }
+	  var status = $('#status').children("option:selected").val();
+      if(status != ''){
+        data.status = status;
+      }
+	},
+	complete: function(response){
+      hideLoader();
+    }
+  }
+	});
+
+	$('#searchFilter').click(function(){
+		alert(ok);
+	 table.draw();
+  });
 </script>
 
 @endsection

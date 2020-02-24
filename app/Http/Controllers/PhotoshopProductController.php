@@ -8,6 +8,7 @@ use App\photoshop_cache;
 use App\photoshop_status_type;
 use DB;
 use Auth;
+use Response;
 use App\photographyUploadFile;
 class PhotoshopProductController extends Controller
 {
@@ -21,10 +22,11 @@ class PhotoshopProductController extends Controller
     }
     public function list_of_product()
     {
-        $list=$this->list_prpduct;
+        $data=photography_product::paginate(10);
         $category=$this->category;
         $color=$this->list_prpduct;
-       return view('Photoshop/Product/list',compact('list','category','color'));
+        $datacount = $this->list_prpduct->count();
+       return view('Photoshop/Product/list',compact('data','category','color','datacount'));
     }
 
     public function upload_csv_list()
@@ -40,6 +42,7 @@ class PhotoshopProductController extends Controller
 
     public function list_of_product_filter(Request $request)
     {
+        $data=array();
         $category=$request->input('category');
         $color=$request->input('color');
         $status=$request->input('status');
@@ -50,12 +53,40 @@ class PhotoshopProductController extends Controller
             'status'=>$status,
             'sku'=>$sku
         );
-        $data=array_filter($filter);
-      
-        $list=photography_product::getFilterData($data);
+        $data1=array_filter($filter);
+        $list=photography_product::getFilterData();
         $category=$this->category;
         $color=$this->list_prpduct;
-       return view('Photoshop/Product/list',compact('list','category','color','filter','done'));
+      if($list->count()>0)
+      {
+        foreach($list as $key=>$value)
+        {
+            $sku=$value->sku;
+            $category=$value->category->name;
+            $color=$value->color;
+            $status=$value->status;
+           if($status=='0')
+           {
+            $status="Pending";
+            $action = '<a class="color-content table-action-style" href="" style="display: none;"><i class="material-icons md-18">show</i></a>&nbsp;';
+
+           }else{
+            $status="Done";
+            $action = '<a class="color-content table-action-style" href="" style="display: none;"><i class="material-icons md-18">show</i></a>&nbsp;';
+
+           }
+
+            $data['data'][]=array($sku,$category,$color,$status,$action);
+
+        }
+      }else{
+          $data['data'][]=array('','','','','','','');
+      }
+       echo json_encode($data);
+       exit;
+      
+        
+       //return view('Photoshop/Product/list',compact('list','category','color','filter','done'));
     }
 
     public function upload_csv_product(Request $request)

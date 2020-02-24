@@ -42,8 +42,8 @@ class photography_product extends Model
        return photography_product::where($data)->exists();
    }
 
-   public static function getFilterData($data)
+   public static function getFilterData()
    {
-       return photography_product::where($data)->get();
+       return photography_product::all();
    }
 }

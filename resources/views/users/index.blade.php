@@ -111,6 +111,7 @@ $user = Auth::user();
                           </thead>
                           <tbody>
                               @foreach ($data as $key => $user)
+                             
                               <tr class="filter">
                                 <td>{{ ++$i }}</td>
                                 <td>{{ $user->name }}</td>
