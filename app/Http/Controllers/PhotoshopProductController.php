@@ -25,7 +25,7 @@ class PhotoshopProductController extends Controller
         $data=photography_product::paginate(10);
         $category=$this->category;
         $color=$this->list_prpduct;
-        $datacount = $this->list_prpduct->count();
+        $datacount =$data->count();
        return view('Photoshop/Product/list',compact('data','category','color','datacount'));
     }
 
@@ -43,49 +43,87 @@ class PhotoshopProductController extends Controller
     public function list_of_product_filter(Request $request)
     {
         $data=array();
-        $category=$request->input('category');
-        $color=$request->input('color');
-        $status=$request->input('status');
-        $sku=$request->input('sku');
-        $filter=array(
-            'categoryid'=>$category,
-            'color'=>$color,
-            'status'=>$status,
-            'sku'=>$sku
-        );
-        $data1=array_filter($filter);
-        $list=photography_product::getFilterData();
-        $category=$this->category;
-        $color=$this->list_prpduct;
-      if($list->count()>0)
-      {
-        foreach($list as $key=>$value)
+        $params = $request->post();
+        $params = $request->post();
+		$start = (!empty($params['start']) ? $params['start'] : 0);
+		$length = (!empty($params['length']) ? $params['length'] : 10);
+		$stalen = $start / $length;
+		$curpage = $stalen;
+        $maindata = photography_product::query();
+        if(!empty($params['sku']))
         {
-            $sku=$value->sku;
-            $category=$value->category->name;
-            $color=$value->color;
-            $status=$value->status;
-           if($status=='0')
-           {
-            $status="Pending";
-            $action = '<a class="color-content table-action-style" href="" style="display: none;"><i class="material-icons md-18">show</i></a>&nbsp;';
-
-           }else{
-            $status="Done";
-            $action = '<a class="color-content table-action-style" href="" style="display: none;"><i class="material-icons md-18">show</i></a>&nbsp;';
-
-           }
-
-            $data['data'][]=array($sku,$category,$color,$status,$action);
-
+            $maindata->where('sku',$params['sku']);
         }
-      }else{
-          $data['data'][]=array('','','','','','','');
-      }
-       echo json_encode($data);
-       exit;
-      
+        if(!empty($params['category']))
+        {
+            $maindata->where('categoryid',$params['category']);
+        }
+        if(!empty($params['color']))
+        {
+            $maindata->where('color',$params['color']);
+       
+        }
+        if(!empty($params['status']))
+        {
+            if($params['status']=='1')
+            {
+                $status="1";
+            }else{
+                $status="0";
+            }
+            $maindata->where('status',$status);
+       
+        }
+        $datacount = $maindata->count();
+		$datacoll = $maindata;
+        $data["recordsTotal"] = $datacount;
+		$data["recordsFiltered"] = $datacount;
+		$data['deferLoading'] = $datacount;
         
+        $datacollection = $datacoll->take($length)->offset($start)->get();
+        
+        if(count($datacollection) > 0)
+        {
+            foreach($datacollection as $key => $product)
+            {
+               $id=$product->id;
+                $sku=$product->sku;
+                $category=$product->category->name;
+                $color=$product->color;
+                if($product->status=='0')
+                {
+                    $status="pending";
+                
+                }
+                else{
+                    $status="Done";
+               
+                }
+                if($product->status=='0')
+                {
+                    
+                    $action='<a class="color-content table-action-style btn-delete-customer" data-href="'.route('photography.product.delete',['id'=>$product->id]) .'" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>&nbsp;&nbsp;';
+                    $action .='<a href="'.route('product.view',['id'=>$product->id]) .'" class="color-content disabled table-action-style"><i class="material-icons md-18">remove_red_eye</i></a>';
+                 
+               
+				
+                
+                }
+                else{
+                    $action='<a class="color-content table-action-style btn-delete-customer disabled" data-href="'.route('photography.product.delete',['id'=>$product->id]) .'" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>&nbsp;&nbsp;';
+                  
+                    $action .='<a href="'.route('product.view',['id'=>$product->id]) .'" class="color-content  table-action-style"><i class="material-icons md-18">remove_red_eye</i></a>';
+                   
+                
+               
+                }
+                $data['data'][] = array( $sku, $color ,$category, $status,$action);
+            }
+        }else{
+            $data['data'][] = array('', '', '', '', '', '');
+	
+        }
+        echo json_encode($data);exit;
        //return view('Photoshop/Product/list',compact('list','category','color','filter','done'));
     }
 

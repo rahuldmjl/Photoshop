@@ -42,9 +42,9 @@
 						<h5 class="box-title">Product List</h5>
 						<div class="tabs">
 							<ul class="nav nav-tabs">
-								<li class="nav-item active" ><a class="nav-link" href="#home-tab" data-toggle="tab" aria-expanded="true">Home</a>
+								<li class="nav-item " ><a class="nav-link" href="#home-tab" data-toggle="tab" aria-expanded="true">Home</a>
 								</li>
-								<li class="nav-item "><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
+								<li class="nav-item active"><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
 								</li>
 							
 							</ul>
@@ -52,7 +52,7 @@
 						
 							<!-- /.nav-tabs -->
 							<div class="tab-content">
-								<div class="tab-pane active" id="home-tab">
+								<div class="tab-pane" id="home-tab">
 									<div class="widget-list">
 										<div class="row">
 											<!-- Counter: Sales -->
@@ -102,7 +102,7 @@
 								
 									</div>
 								</div>
-								<div class="tab-pane" id="profile-tab">
+								<div class="tab-pane  active" id="profile-tab">
 									<div class="col-md-12 widget-holder content-area">
 										<div class="widget-bg">
 											<div class="widget-heading clearfix">
@@ -151,7 +151,9 @@
 														</div>
 														<div class="col-md-3">
 															<div class="form-group">
-																<input class="btn btn-primary" style="height: 43px;" id="searchFilter"   type="submit" value="Apply">
+																<input class="btn btn-primary" style="height: 43px;" id="searchfilter"   type="submit" value="Apply">
+																<input class="btn btn-success" style="height: 43px;" id="reset"   type="submit" value="Reset">
+															
 															</div>
 														</div>
 													</div>
@@ -231,6 +233,7 @@
 							<?php 
 						}
 						?>
+						
 						</td>
 
     </tr>
@@ -349,6 +352,7 @@
 		data._token = "{{ csrf_token() }}";
 		 showLoader();
 	  var sku = $('#sku').val();
+	  
       if(sku != ''){
         data.sku = sku;
       }
@@ -370,10 +374,37 @@
     }
   }
 	});
+	$('#searchfilter').click(function(){
+    table.draw();
+  });
+  $('#reset').click(function(){
+	$('#sku').val('');
+	$('#category option[value=""]').attr('selected','selected');
+	$('#color option[value=""]').attr('selected','selected');
+	$('#status option[value=""]').attr('selected','selected');
 
-	$('#searchFilter').click(function(){
-		alert(ok);
-	 table.draw();
+	$('#category').on('change', function() {
+      if(this.value == ''){
+        $('#category option[value=""]').attr('selected','selected');
+      }else{
+        $('#category option[value=""]').removeAttr('selected','selected');
+      }
+	});
+	$('#color').on('change', function() {
+      if(this.value == ''){
+        $('#color option[value=""]').attr('selected','selected');
+      }else{
+        $('#color option[value=""]').removeAttr('selected','selected');
+      }
+	});
+	$('#status').on('change', function() {
+      if(this.value == ''){
+        $('#status option[value=""]').attr('selected','selected');
+      }else{
+        $('#status option[value=""]').removeAttr('selected','selected');
+      }
+    });
+	table.draw();
   });
 </script>
 
