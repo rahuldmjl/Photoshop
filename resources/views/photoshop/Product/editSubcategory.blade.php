@@ -2,7 +2,7 @@
 @extends('layout.photo_navi')
 
 
-@section('title', 'Add Product')
+@section('title', 'Edit Sub Category')
 
 @section('distinct_head')
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -16,7 +16,7 @@
 <main class="main-wrapper clearfix">
   <!-- Page Title Area -->
   <div class="row page-title clearfix">
-    {{ Breadcrumbs::render('add_subcategory') }}
+    
       <!-- /.page-title-right -->
   </div>
   <!-- /.page-title -->
@@ -33,14 +33,26 @@
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
   					<div class="widget-heading clearfix">
-  						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Add Product </h5>
+  						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Edit Sub Category</h5>
 						
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
-                        <form method='post'>
+                      <form method='post' action='{{route ('add_subcategory')}}'>
+                            <input type="hidden" name="id" value="{{$data->id}}"/>
                             {{ csrf_field() }}
-                            <input type='file' name='name' >
-                            <input type='submit' class="btn btn-primary" name='submit' value='Upload'>
+                                <div class="form-group">
+                                    <label for="username">Sub Category Name</label>
+                                    <input class="form-control" value="{{$data->subcatname}}" type="text" id="subcategory" name="subcategory"  placeholder="Sub Category Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="emailaddress">Main Category name</label>
+                                    <input class="form-control" value="{{$data->maincategoryname	}}"  type="text" id="maincategory" name="maincategory"   placeholder="Main Category name">
+                                </div>
+                               
+                                <div class="form-group">
+                                    <button class="btn btn-lg btn-primary " type="submit">Save</button>
+                                </div>
+                            
                           </form>
   					</div>
   				</div>

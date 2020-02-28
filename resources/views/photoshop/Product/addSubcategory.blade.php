@@ -2,7 +2,7 @@
 @extends('layout.photo_navi')
 
 
-@section('title', 'Add Product')
+@section('title', 'Add Sub Category')
 
 @section('distinct_head')
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -33,14 +33,25 @@
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
   					<div class="widget-heading clearfix">
-  						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Add Product </h5>
+  						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Add Sub Category</h5>
 						
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
-                        <form method='post'>
+                        <form method='post' action=''>
                             {{ csrf_field() }}
-                            <input type='file' name='name' >
-                            <input type='submit' class="btn btn-primary" name='submit' value='Upload'>
+                                <div class="form-group">
+                                    <label for="username">Sub Category Name</label>
+                                    <input class="form-control" type="text" id="subcategory" name="subcategory"  placeholder="Sub Category Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="emailaddress">Main Category name</label>
+                                    <input class="form-control" type="text" id="maincategory" name="maincategory"   placeholder="Main Category name">
+                                </div>
+                               
+                                <div class="form-group">
+                                    <button class="btn btn-lg btn-primary " type="submit">Save</button>
+                                </div>
+                            
                           </form>
   					</div>
   				</div>

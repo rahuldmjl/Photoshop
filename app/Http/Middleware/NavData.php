@@ -13,6 +13,7 @@ use App\PaymentType;
 use App\ShowroomOrders;
 use App\TransactionType;
 use App\User;
+use App\photography_done;
 use Auth;
 use Closure;
 use DateTime;
@@ -266,7 +267,6 @@ class NavData {
 			->union($approved_payments_transactions);
 
 		$nav_counters['total_approved'] = $approved->count();
-
 		\View::share('nav_counters', $nav_counters);
 		return $next($request);
 	}

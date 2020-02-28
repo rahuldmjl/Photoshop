@@ -38,7 +38,7 @@ class PhotoshopController extends Controller
     {
        $pendinglist=array();
      
-       // $pending=photography_product::all();
+       // $pending=photography_product::::paginate(10)();
         $pendinglist=collect($this->product)->where('status','=',0);
       
       $totalproduct= count($pendinglist);  

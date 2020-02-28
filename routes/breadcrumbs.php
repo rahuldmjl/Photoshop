@@ -632,3 +632,13 @@ Breadcrumbs::for('upload_list',function($trail){
 	$trail->parent('dashboard');
 	$trail->push('Product File List', route('upload_list'));
 });
+Breadcrumbs::for('subcategory',function($trail){
+	$trail->parent('dashboard');
+	$trail->push('Subcategory List', route('subcategory'));
+});
+Breadcrumbs::for('add_subcategory',function($trail){
+	$trail->parent('dashboard');
+	$trail->push('Add Subcategory', route('add_subcategory'));
+});
+
+

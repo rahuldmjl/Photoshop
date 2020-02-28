@@ -10,14 +10,17 @@ use DB;
 use Auth;
 use Response;
 use App\photographyUploadFile;
+use App\Subcategory;
 class PhotoshopProductController extends Controller
 {
     public $list_prpduct;
     public $category;
+    public $subcategory;
     public function __construct()
     {
         $this->list_prpduct=collect(photography_product::get_product_list());
         $this->category=collect(category::all());
+        $this->subcategory=collect(Subcategory::all());
        
     }
     public function list_of_product()
@@ -213,5 +216,50 @@ class PhotoshopProductController extends Controller
      }
     $product=photoshop_cache::productdetail($id);
     return view('Photoshop/Product/view',compact('listproduct','listproduct1','totalwork','product','totalrework','totaldone'));
+   }
+
+
+   public function subcategory_list()
+   {
+        $list=$this->subcategory;
+       return view('Photoshop/Product/subcategory',compact('list'));
+      
+   }
+   public function add_subcategory()
+   {
+      
+    return view('Photoshop/Product/addsubcategory');
+   }
+   public function edit_subcategory($id)
+   {    
+       $data=Subcategory::find($id);
+      
+       return view('Photoshop/Product/editsubcategory',compact('data'));
+   }
+
+   public function delete_subcategory($id)
+   {
+       $data=Subcategory::find($id);
+       $data->delete();
+       return  redirect('Photoshop/Product/subcategory')->with('msg',"subCategory delete Successfulll");
+   }
+   public function submit_subcategory(Request $request)
+   {
+
+        $main=new Subcategory();
+       $main->subcatname=$request->input('subcategory');
+       $main->maincategoryname=$request->input('maincategory');
+       if($id=$request->input('id'))
+       {
+       $sub=Subcategory::find($id);
+       $sub->subcatname=$request->input('subcategory');
+       $sub->maincategoryname=$request->input('maincategory');
+       $sub->save();
+       }else{
+        $main->save();
+       }
+      
+      return  redirect('Photoshop/Product/subcategory')->with('msg',"subCategory add Successfulll");
+      
    }
 }

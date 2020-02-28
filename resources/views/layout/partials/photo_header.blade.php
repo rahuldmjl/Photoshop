@@ -98,12 +98,15 @@ DB::setTablePrefix('dml_');
                 <ul class="list-unstyled sub-menu @if ( \Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*') ) in @endif">
                     <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/add');?>">Add Product</a>
                     </li>
-                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/list');?>">List Product</a>
+                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/list');?>">List Product </a>
                     </li>
                     <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/upload');?>">Product File</a>
                     </li>
+                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/subcategory');?>">Sub Category </a>
+                    </li>
                 </ul>
             </li>
+           
         </ul>
         
     </nav>

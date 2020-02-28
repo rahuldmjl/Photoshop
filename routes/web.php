@@ -716,6 +716,7 @@ Route::post('account/payments#future_due', ['as' => 'accountpayment.future_due',
 
 Photoshop Product COntroller 
 */
+
 Route::get('Photoshop/Product/list','PhotoshopProductController@list_of_product')->name('product_list');
 Route::get('Photoshop/Product/add','PhotoshopProductController@add_of_product')->name('product_add');
 Route::post('Photoshop/Product/ajaxlist','PhotoshopProductController@list_of_product_filter')->name('ajaxlist');
@@ -724,6 +725,11 @@ Route::post('Photoshop/Product/upload','PhotoshopProductController@upload_csv_pr
 Route::get('Photoshop/Product/delete','PhotoshopProductController@delete_product')->name('photography.product.delete');
 Route::get('Photoshop/Product/view/{id}','PhotoshopProductController@get_product_detail')->name('product.view');
 Route::post('Photoshop/Product/list','PhotoshopProductController@list_of_product_filter')->name('product_list');
+Route::get('Photoshop/Product/subcategory','PhotoshopProductController@subcategory_list')->name('subcategory');
+Route::get('Photoshop/Product/subcategory/add','PhotoshopProductController@add_subcategory')->name('add_subcategory');
+Route::post('Photoshop/Product/subcategory/add','PhotoshopProductController@submit_subcategory');
+Route::get('Photoshop/Product/subcategory/edit/{id}','PhotoshopProductController@edit_subcategory')->name('subcategory.edit');
+Route::get('Photoshop/Product/subcategory/delete/{id}','PhotoshopProductController@delete_subcategory')->name('subcategory.delete');
 /*
 Photoshop department
 */

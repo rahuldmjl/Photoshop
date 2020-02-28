@@ -724,7 +724,8 @@ if ($user->hasRole('Gold Manager')) {
                             </li>
                         </ul>
                     </li>
-             <?php }?>
+             <?php }
+         ?>
         </ul>
     </nav>
             <!-- /.sidebar-nav -->
