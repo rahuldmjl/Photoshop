@@ -70,11 +70,11 @@ class PhotoshopProductController extends Controller
         {
             if($params['status']=='1')
             {
-                $status="1";
+                $status1="1";
             }else{
-                $status="0";
+                $status1="0";
             }
-            $maindata->where('status',$status);
+            $maindata->where('status',$status1);
        
         }
         $datacount = $maindata->count();
@@ -227,14 +227,14 @@ class PhotoshopProductController extends Controller
    }
    public function add_subcategory()
    {
-      
-    return view('Photoshop/Product/addsubcategory');
+      $list=$this->category;
+    return view('Photoshop/Product/addsubcategory',compact('list'));
    }
    public function edit_subcategory($id)
    {    
        $data=Subcategory::find($id);
-      
-       return view('Photoshop/Product/editsubcategory',compact('data'));
+      $list=$this->category;
+       return view('Photoshop/Product/editsubcategory',compact('data','list'));
    }
 
    public function delete_subcategory($id)
@@ -245,7 +245,7 @@ class PhotoshopProductController extends Controller
    }
    public function submit_subcategory(Request $request)
    {
-
+    $dara=array();
         $main=new Subcategory();
        $main->subcatname=$request->input('subcategory');
        $main->maincategoryname=$request->input('maincategory');
@@ -255,11 +255,24 @@ class PhotoshopProductController extends Controller
        $sub->subcatname=$request->input('subcategory');
        $sub->maincategoryname=$request->input('maincategory');
        $sub->save();
-       }else{
-        $main->save();
+       }
+       else{
+          
+         $check=Subcategory::validation($request->input('subcategory'),$request->input('maincategory')); 
+         if($check=='1')
+         {
+             return  redirect('Photoshop/Product/subcategory/add')->with('msg',"Sub Category Already Existed Successfulll");
+         }
+         else{
+             $main->save();
+             return  redirect('Photoshop/Product/subcategory')->with('msg',"Sub Category add Successfulll");
+     
+         }
+         return  redirect('Photoshop/Product/subcategory')->with('msg',"subCategory add Successfulll");
+     
+        
        }
       
-      return  redirect('Photoshop/Product/subcategory')->with('msg',"subCategory add Successfulll");
       
    }
 }

@@ -34,22 +34,30 @@
   				<div class="widget-bg">
   					<div class="widget-heading clearfix">
   						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Add Sub Category</h5>
-						
-  					</div>
+					
+            </div>
+            @if(Session::has('msg'))
+<p class="alert alert-info">{{ Session::get('msg') }}</p>
+@endif
   					<div class="widget-body clearfix dataTable-length-top-0">
                         <form method='post' action=''>
                             {{ csrf_field() }}
                                 <div class="form-group">
                                     <label for="username">Sub Category Name</label>
-                                    <input class="form-control" type="text" id="subcategory" name="subcategory"  placeholder="Sub Category Name">
+                                    <input class="form-control" type="text" id="subcategory" required="" name="subcategory"  placeholder="Sub Category Name">
                                 </div>
                                 <div class="form-group">
                                     <label for="emailaddress">Main Category name</label>
-                                    <input class="form-control" type="text" id="maincategory" name="maincategory"   placeholder="Main Category name">
+                                    <select name="maincategory" class="form-control">
+                                      <option>Select Main Category</option>
+                                      @foreach ($list as $item)
+                                    <option value="{{$item->entity_id}}">{{$item->name}}</option>
+                                      @endforeach
+                                    </select>
                                 </div>
                                
                                 <div class="form-group">
-                                    <button class="btn btn-lg btn-primary " type="submit">Save</button>
+                                    <button class="btn  btn-primary " type="submit">Save</button>
                                 </div>
                             
                           </form>

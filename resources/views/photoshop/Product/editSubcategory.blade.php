@@ -46,7 +46,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="emailaddress">Main Category name</label>
-                                    <input class="form-control" value="{{$data->maincategoryname	}}"  type="text" id="maincategory" name="maincategory"   placeholder="Main Category name">
+                                    <select class="form-control" name="maincategory">
+                                      <option value="{{$data->getMaincategory->entity_id}}">{{$data->getMaincategory->name}}</option>
+                                     @foreach ($list as $item)
+                                    <option value="{{$item->entity_id}}">{{$item->name}}</option>
+                                      @endforeach
+                                    
+                                    </select>
                                 </div>
                                
                                 <div class="form-group">

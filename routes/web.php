@@ -736,7 +736,6 @@ Photoshop department
 Route::get('Photoshop/Photography','PhotoshopController@index')->name('photography.index');
 Route::post('Photoshop/Photography/pending','PhotoshopController@pending_list_submit');
 Route::get('Photoshop/Photography/pending','PhotoshopController@get_pending_list')->name('photography.pending');
-
 Route::get('Photoshop/Photography/done','PhotoshopController@get_done_list')->name('photography.done');
 Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('photography.done');
 Route::get('Photoshop/Photography/rework','PhotoshopController@get_rework_list')->name('photography.rework');

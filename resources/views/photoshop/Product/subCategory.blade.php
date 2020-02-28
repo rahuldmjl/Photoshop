@@ -45,7 +45,9 @@
   						<h5 style="float:left" class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Sub Category List</h5>
 					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
-  						
+						@if(Session::has('msg'))
+						<p class="alert alert-info">{{ Session::get('msg') }}</p>
+						@endif
 	                    <table class="table table-striped table-center word-break mt-0" id="Productlist">
   							<thead>
   								<tr class="bg-primary">
@@ -65,7 +67,7 @@
 	                <tr>
 		                <td>{{$item->id}}</td>
 	                    <td>{{$item->subcatname}}</td>
-						<td>{{$item->maincategoryname}}</td>
+						<td>{{$item->getMaincategory->name}}</td>
                         <td>
                             <a href="{{ route('subcategory.edit',['id'=>$item->id]) }}" class="color-content  table-action-style"><i class="material-icons md-18">edit</i></a>
                             <a  data-href="{{ route('subcategory.delete',['id'=>$item->id]) }}" style="cursor:pointer;" class="color-content  btn-delete-subcategory table-action-style"><i class="material-icons md-18">delete</i></a>
