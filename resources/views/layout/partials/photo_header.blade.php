@@ -94,6 +94,7 @@ DB::setTablePrefix('dml_');
                     </li>
                 </ul>
             </li>
+        
             <li class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) current-page @endif menu-item-has-children "><a href="javascript:void(0);" class="ripple"><span class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) color-color-scheme @endif"><i class="list-icon material-icons">cloud_upload</i> <span class="hide-menu">Product</span></span></a>
                 <ul class="list-unstyled sub-menu @if ( \Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*') ) in @endif">
                     <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/add');?>">Add Product</a>
