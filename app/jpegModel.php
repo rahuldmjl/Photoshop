@@ -31,4 +31,8 @@ public function getProduct()
       return EditingModel::where('product_id','=',$productid)->update($data);
   }
   
+  public static function getDoneProduct()
+  {
+    return jpegModel::where('current_status',1)->get();
+  }
 }

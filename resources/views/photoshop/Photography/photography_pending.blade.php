@@ -34,16 +34,148 @@
     </div>
   </div>
   	<div class="widget-list">
+      <div class="row">
+        <div class="col-md-12 widget-holder">
+          <div class="widget-bg">
+            <div class="widget-body clearfix">
+              <h5 class="box-title">Photography pending Filter</h5>
+              <div class="tabs">
+                <ul class="nav nav-tabs">
+                  <li class="nav-item " ><a class="nav-link" href="#home-tab" data-toggle="tab" aria-expanded="true">Home</a>
+                  </li>
+                  <li class="nav-item active"><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
+                  </li>
+                
+                </ul>
+                
+              
+                <!-- /.nav-tabs -->
+                <div class="tab-content">
+                  <div class="tab-pane" id="home-tab">
+                    <div class="widget-list">
+                      <div class="row">
+                        <!-- Counter: Sales -->
+                        <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                          <div class="widget-bg bg-primary text-inverse">
+                            <div class="widget-body">
+                              <div class="widget-counter">
+                                <h6>Total  <small class="text-inverse">Product</small></h6>
+                                <h3 class="h1"><span class="counter">{{$datacount}}</span></h3><i class="material-icons list-icon">event_available</i>
+                              </div>
+                              <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                          </div>
+                          <!-- /.widget-bg -->
+                        </div>
+                        <!-- /.widget-holder -->
+                        <!-- Counter: Subscriptions -->
+                        <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                          <div class="widget-bg bg-color-scheme text-inverse">
+                            <div class="widget-body clearfix">
+                              <div class="widget-counter">
+                                <h6>Total <small class="text-inverse">Done</small></h6>
+                                <h3 class="h1"><span class="counter">{{$datacount-$totalpending->count()}}</span></h3><i class="material-icons list-icon">event_available</i>
+                              </div>
+                              <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                          </div>
+                          <!-- /.widget-bg -->
+                        </div>
+                        <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                          <div class="widget-bg badge-danger text-inverse">
+                            <div class="widget-body clearfix">
+                              <div class="widget-counter">
+                                <h6>Total <small class="text-inverse">Pending</small></h6>
+                                <h3 class="h1"><span class="counter">{{$totalpending->count()}}</span></h3><i class="material-icons list-icon">event_available</i>
+                              </div>
+                              <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                          </div>
+                          <!-- /.widget-bg -->
+                        </div>
+                      </div>
+                      <!-- /.row -->
+                  
+                    </div>
+                  </div>
+                  <div class="tab-pane  active" id="profile-tab">
+                    <div class="col-md-12 widget-holder content-area">
+                      <div class="widget-bg">
+                        <div class="widget-heading clearfix">
+                          <h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Filter</h5>
+                          
+                        </div>
+                        <div class="widget-body clearfix dataTable-length-top-0">
+                          
+                            <div class="row">
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <select class="form-control" name="category" id="category">
+                                    <option value="">Select Category</option>
+                                    @foreach($category as $cat){
+                                      <option value={{$cat->entity_id}}>{{$cat->name}}</option>
+                                    
+                                    @endforeach
+                                  </select>	
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <select class="form-control" name="color" id="color">
+                                    <option value="">Select Color</option>
+                                    @foreach($data->unique('color') as $user){
+                                      <option>{{$user->color}}</option>
+                                    
+                                    @endforeach
+                                  </select>	
+                                </div>
+                              </div>
+                             
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <input class="form-control" id="sku" name="sku" style="height: 43px;" placeholder="Sku Search" type="text">
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <input class="btn btn-primary" style="height: 43px;" id="searchfilter"   type="submit" value="Apply">
+                                  <input class="btn btn-success" style="height: 43px;" id="reset"   type="submit" value="Reset">
+                                
+                                </div>
+                              </div>
+                            </div>
+                          
+              
+              
+                        </div>
+                      </div>
+                    </div>	</div>
+                  
+                </div>
+                <!-- /.tab-content -->
+              </div>
+              <!-- /.tabs -->
+            </div>
+            <!-- /.widget-body -->
+          </div>
+          <!-- /.widget-bg -->
+        </div>
+    
+      </div>
+      
       	<div class="row">
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
   					<div class="widget-heading clearfix">
-  						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Product List</h5>
+  						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Photography Pending List</h5>
 						
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0"   data-toggle="datatables" >
+	                    <table class="table table-striped table-center word-break mt-0" id="pendinglist" >
   							<thead>
   								<tr class="bg-primary">
   									<th>Sku</th>
@@ -103,6 +235,7 @@
   <!-- /.widget-list -->
 </main>
 <!-- /.main-wrappper -->
+<input type="hidden" id="pendinglistproductajax" value="<?=URL::to('/Photoshop/Photography/ajaxlist1');?>">
 
 <style type="text/css">
 .form-control[readonly] {background-color: #fff;}
@@ -119,5 +252,107 @@
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"></script>
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
+<script>
+		var buttonCommon = {
+        exportOptions: {
+            format: {
+                body: function ( data, row, column, node ) {                    
+                    if (column === 3) {
+                      data = data.replace(/(&nbsp;|<([^>]+)>)/ig, "");
+                    }
+                    return data;
+                }
+            }
+        }
+	};
+	var table = $('#pendinglist').DataTable({
+		"dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
+  "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
+  "buttons": [
+	$.extend( true, {}, buttonCommon, {
+      extend: 'csv',
+      footer: false,
+      title: 'Photography-product-list',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2,3],
+          orthogonal: 'export'
+      }
+    }),
+	$.extend( true, {}, buttonCommon, {
+      extend: 'excel',
+      footer: false,
+      title: 'Photography-product-list',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2,3],
+          orthogonal: 'export'
+      }
+    })
+  ],
+  "language": {
+    "search": "",
+    "infoEmpty": "No matched records found",
+    "zeroRecords": "No matched records found",
+    "emptyTable": "No data available in table",
+    /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
+  },
+  "order": [[ 0, "desc" ]],
+  "deferLoading": <?=$totalproduct?>,
+  "processing": true,
+  "serverSide": true,
+  "searching": false,
+  "serverMethod": "post",
+  "ajax":{
+	"url": $("#pendinglistproductajax").val(),
+	"data": function(data, callback){
+		data._token = "{{ csrf_token() }}";
+     showLoader();
+     var sku = $('#sku').val();
+	  
+    if(sku != ''){
+      data.sku = sku;
+     
+    }
+  var category = $('#category').children("option:selected").val();
+    if(category != ''){
+      data.category = category;
+    }
+  var color = $('#color').children("option:selected").val();
+    if(color != ''){
+      data.color = color;
+    }
+ 
+	},
+	complete: function(response){
+      hideLoader();
+	}
+  }
+  });
+  $('#searchfilter').click(function(){
+    table.draw();
+  });
+  $('#reset').click(function(){
+	$('#sku').val('');
+	$('#category option[value=""]').attr('selected','selected');
+	$('#color option[value=""]').attr('selected','selected');
 
+	$('#category').on('change', function() {
+      if(this.value == ''){
+        $('#category option[value=""]').attr('selected','selected');
+      }else{
+        $('#category option[value=""]').removeAttr('selected','selected');
+      }
+	});
+	$('#color').on('change', function() {
+      if(this.value == ''){
+        $('#color option[value=""]').attr('selected','selected');
+      }else{
+        $('#color option[value=""]').removeAttr('selected','selected');
+      }
+	});
+
+	table.draw();
+  });
+</script>
 @endsection

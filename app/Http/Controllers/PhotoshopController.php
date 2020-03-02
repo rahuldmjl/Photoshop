@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\photography;
+use App\category;
 use App\productListModel;
 use App\Helpers\PhotoshopHelper;
 use App\photography_product;
@@ -13,9 +14,11 @@ class PhotoshopController extends Controller
 {
     public $product;
     public $photography;
+   
     public function __construct()
     {
         $this->product=photography_product::all();
+        $this->category=collect(category::all());
         $this->photography=photography::getphotographyProduct();
        
     }
@@ -37,15 +40,80 @@ class PhotoshopController extends Controller
     public function get_pending_list()
     {
        $pendinglist=array();
+        $pendinglist=photography_product::all()->random(10)->take(10)->where('status', 0);
      
-       // $pending=photography_product::::paginate(10)();
-        $pendinglist=collect($this->product)->where('status','=',0);
-      
-      $totalproduct= count($pendinglist);  
-      
-   return view('Photoshop/Photography/photography_pending',compact('pendinglist','totalproduct'));
+        $totalpending=collect($this->product)->where('status','=',0);
+        $totaldoneproduct=collect($this->product)->where('status','=',1)->count();;
+      $data=collect($this->product);
+      $category=$this->category;
+      $totalproduct= count($totalpending);  
+      $datacount= count($this->product);  
+   return view('Photoshop/Photography/photography_pending',compact('pendinglist','totalproduct','totalpending','datacount','data','category'));
  
   
+    }
+
+    public function ajax_get_pending_list(Request $request)
+    {
+        $data=array();
+        $params = $request->post();
+        $params = $request->post();
+		$start = (!empty($params['start']) ? $params['start'] : 0);
+		$length = (!empty($params['length']) ? $params['length'] : 10);
+		$stalen = $start / $length;
+		$curpage = $stalen;
+        $maindata = photography_product::query();
+     
+        $datacount = $maindata->count();
+		$datacoll = $maindata->where('status','=',0);
+        $data["recordsTotal"] = $datacount;
+		$data["recordsFiltered"] = $datacount;
+		$data['deferLoading'] = $datacount;
+        if(!empty($params['sku']))
+        {
+            $maindata->where('sku',$params['sku']);
+        }
+        if(!empty($params['category']))
+        {
+            $maindata->where('categoryid',$params['category']);
+        }
+        if(!empty($params['color']))
+        {
+            $maindata->where('color',$params['color']);
+       
+        }
+       
+        $datacollection = $datacoll->take($length)->offset($start)->get();
+        
+        if(count($datacollection) > 0)
+        {
+            foreach($datacollection as $key => $product)
+            {
+                $token=$request->session()->token().
+               $id=$product->id;
+                $sku=$product->sku;
+                $category=$product->category->name;
+                $color=$product->color;
+                $action='
+               <form action="'.url('Photoshop/Photography/pending').'" method="POST">
+              <input type="hidden" value="'.$id.'" name="product_id"/>
+               <input type="hidden" value="'.$product->category->id.'" name="category_id"/>
+               <input type="hidden" name="_token" id="csrf-token" value="'.$token.'" />
+                   <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
+                       <option value="2">Pending</option>
+                       <option value="1">In processing</option>
+                       <option value="3">Done</option>
+                   </select>
+                   <input type="submit" style="height:20px;" class="btn btn-primary" value="Submit"/>
+           
+               </form>';
+                $data['data'][] = array( $sku, $color ,$category,$action);
+            }
+        }else{
+            $data['data'][] = array('', '', '', '', '');
+	
+        }
+        echo json_encode($data);exit;
     }
      /*
     Photography done get data from this function

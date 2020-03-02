@@ -717,9 +717,9 @@ Route::post('account/payments#future_due', ['as' => 'accountpayment.future_due',
 Photoshop Product COntroller 
 */
 
+Route::get('Photoshop/Product/uniquesku','PhotoshopProductController@unique_deifne_sku')->name('uniquesku');
 Route::get('Photoshop/Product/list','PhotoshopProductController@list_of_product')->name('product_list');
 Route::get('Photoshop/Product/add','PhotoshopProductController@add_of_product')->name('product_add');
-Route::post('Photoshop/Product/ajaxlist','PhotoshopProductController@list_of_product_filter')->name('ajaxlist');
 Route::get('Photoshop/Product/upload','PhotoshopProductController@upload_csv_list')->name('upload_list');
 Route::post('Photoshop/Product/upload','PhotoshopProductController@upload_csv_product')->name('upload_csv');
 Route::get('Photoshop/Product/delete','PhotoshopProductController@delete_product')->name('photography.product.delete');
@@ -735,6 +735,7 @@ Photoshop department
 */
 Route::get('Photoshop/Photography','PhotoshopController@index')->name('photography.index');
 Route::post('Photoshop/Photography/pending','PhotoshopController@pending_list_submit');
+Route::post('Photoshop/Photography/ajaxlist1','PhotoshopController@ajax_get_pending_list')->name('pendingajax.list');
 Route::get('Photoshop/Photography/pending','PhotoshopController@get_pending_list')->name('photography.pending');
 Route::get('Photoshop/Photography/done','PhotoshopController@get_done_list')->name('photography.done');
 Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('photography.done');

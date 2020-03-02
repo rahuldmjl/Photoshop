@@ -6,6 +6,7 @@ use App\category;
 use Illuminate\Http\Request;
 use App\photoshop_cache;
 use App\photoshop_status_type;
+use App\jpegModel;
 use DB;
 use Auth;
 use Response;
@@ -274,5 +275,21 @@ class PhotoshopProductController extends Controller
        }
       
       
+   }
+
+
+   public function unique_deifne_sku()
+   {
+    DB::setTablePrefix('');
+    $uniqueskudata=array();
+    $uniquesku = DB::table('dml_photography_products')->select("*")
+    ->join("dml_jpeg_models","dml_jpeg_models.product_id","=","dml_photography_products.id")
+    ->where("dml_jpeg_models.next_department_status",'=',0)
+    ->get();
+     DB::setTablePrefix('dml_');
+     $datacollection=collect($uniquesku);
+     $subcategory=Subcategory::all();
+
+     return view('Photoshop/Product/uniquesku',compact('datacollection','subcategory'));
    }
 }

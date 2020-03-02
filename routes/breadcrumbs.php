@@ -641,4 +641,8 @@ Breadcrumbs::for('add_subcategory',function($trail){
 	$trail->push('Add Subcategory', route('add_subcategory'));
 });
 
+Breadcrumbs::for('uniquesku',function($trail){
+	$trail->parent('dashboard');
+	$trail->push('Unique Sku List', route('uniquesku'));
+});
 

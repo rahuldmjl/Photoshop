@@ -510,6 +510,7 @@ if ($inventoryStatus == 'In' || $inventoryStatus == ' In') {
 </div>
 <!-- /.modal-dialog -->
 </div>
+<span class="badge badge-border notification badge-border-inverted bg-primary">0</span>
 @endsection
 
 @section('distinct_footer_script')
@@ -587,7 +588,8 @@ var inventoryProductsTable = $('#inventoryProductsTable').DataTable({
       $.each($(".chk_stocktype:checked"), function(){
           stockType.push($(this).val());
       });
-
+      
+      alert(categoryIds.length)
       var virtualproducts = $('#virtualproductmanager').val();
       if(virtualproducts != ''){
         data.virtualproducts = virtualproducts;
@@ -951,6 +953,7 @@ $(".inventory_action").change(function(){
 function getProminentFilters()
 {
   var categoryIds = [];
+  
   var goldPurity = [];
   var diamondQuality = [];
   var goldColor = [];
@@ -958,7 +961,9 @@ function getProminentFilters()
 
   $("#filterapplied").val('false');
   $.each($(".category_chkbox:checked"), function(){
+
         categoryIds.push($(this).val());
+      
   });
   $.each($(".chk_metalquality:checked"), function(){
         goldPurity.push($(this).val());

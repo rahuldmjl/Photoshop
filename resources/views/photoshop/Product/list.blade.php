@@ -351,6 +351,7 @@
     "data": function(data, callback){
 		data._token = "{{ csrf_token() }}";
 		 showLoader();
+		 console.log(data);
 	  var sku = $('#sku').val();
 	  
       if(sku != ''){
