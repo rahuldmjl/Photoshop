@@ -645,4 +645,8 @@ Breadcrumbs::for('uniquesku',function($trail){
 	$trail->parent('dashboard');
 	$trail->push('Unique Sku List', route('uniquesku'));
 });
+Breadcrumbs::for('doneuniquelist',function($trail){
+	$trail->parent('dashboard');
+	$trail->push('Unique  List', route('doneuniquelist'));
+});
 

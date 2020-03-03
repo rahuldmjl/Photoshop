@@ -12,16 +12,19 @@ use Auth;
 use Response;
 use App\photographyUploadFile;
 use App\Subcategory;
+use App\Uniquedefine;
 class PhotoshopProductController extends Controller
 {
     public $list_prpduct;
     public $category;
     public $subcategory;
+    public $uniqueskulist;
     public function __construct()
     {
         $this->list_prpduct=collect(photography_product::get_product_list());
         $this->category=collect(category::all());
         $this->subcategory=collect(Subcategory::all());
+        $this->uniqueskulist=collect(Uniquedefine::all());
        
     }
     public function list_of_product()
@@ -287,9 +290,35 @@ class PhotoshopProductController extends Controller
     ->where("dml_jpeg_models.next_department_status",'=',0)
     ->get();
      DB::setTablePrefix('dml_');
+     $data=jpegModel::all();
      $datacollection=collect($uniquesku);
      $subcategory=Subcategory::all();
 
      return view('Photoshop/Product/uniquesku',compact('datacollection','subcategory'));
+   }
+
+   public function submit_unique(Request $request)
+   {
+       $uniqueproduct=new Uniquedefine();
+        $uniqueproduct->product_id=$request->input('product_id');
+       $uniqueproduct->category_id=$request->input('category_id');
+       $uniqueproduct->sub_category_id=$request->input('subcatid');
+       $uniqueproduct->skuname=$request->input('skuname');
+       $uniqueproduct->status='1';
+       $uniqueproduct->current_status='0';
+       $uniqueproduct->next_department_status='0';
+       jpegModel::getUpdatestatusjpegnextdepartmentstatus($request->input('product_id'));
+      $uniqueproduct->save();
+      return redirect('Photoshop/Product/uniquesku');
+
+   }
+   /*
+Get Done Unique List 
+   */
+
+   public function get_doneuniquelist()
+   {
+    $uniquelist=$this->uniqueskulist;
+    return view('Photoshop/Product/doneuniquelist',compact('uniquelist'));
    }
 }

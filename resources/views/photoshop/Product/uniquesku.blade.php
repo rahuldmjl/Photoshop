@@ -51,7 +51,8 @@
   								<tr class="bg-primary">
   									<th>Sr no</th>
 									  <th>Sku</th>
-                                    
+                                      <th style="display: none">Action</th>
+								
   									<th style="display: none">Action</th>
   								
   								</tr>
@@ -67,7 +68,7 @@
 		<td wdth="30px"><?php echo $i++;?></td>
 		<td>{{$item->sku}}</td>
 			<td style="display: none">{{$item->product_id}}</td>
-		
+			<td style="display: none">{{$item->category_id}}</td>
 		
 	
 	
@@ -81,6 +82,7 @@
 									<th>Sku</th>
 									<th>Color</th>
                                    <th style="display: none">Action</th>
+								   <th style="display: none">Action</th>
 								
 								</tr>
 							</tfoot>
@@ -101,17 +103,20 @@
 			</div>
 			<div class="modal-body" >
 			
-				<form>
+				<form action="" method="post">
+					@csrf
 					<div class="form-group">
 						<label for="username">Sku</label>
 						<input class="form-control" type="text" id="sku" required="" placeholder="John Doe">
 					</div>
 					<div class="form-group">
-						<input class="form-control" type="hidden" id="productid">
+						<input class="form-control" name="product_id" type="hidden" id="productid">
+						<input class="form-control" name="category_id" type="hidden" id="category_id">
+				
 					</div>
 					<div class="form-group mr-b-30">
 						<label for="password">Sub Category</label>
-						<select class="form-control" id="password">
+						<select class="form-control" id="password" name="subcatid">
 							<option>Select Sub Category</option>
 							@foreach ($subcategory as $items)
 						<option value="{{$items->id}}">{{$items->subcatname}}</option>
@@ -121,7 +126,7 @@
 					</div>
 					<div class="form-group mr-b-30">
 						<label for="username">Sku Name</label>
-						<input class="form-control" type="text" id="sku"  placeholder="Sku Name">
+						<input class="form-control" type="text" id="sku" name="skuname"  placeholder="Sku Name">
 					
 					</div>
 					<div class="mr-b-30">
@@ -157,6 +162,9 @@ $('table tbody tr  td').on('click',function(){
     $("#myModal").modal("show");
     $("#productid").val($(this).closest('tr').children()[2].textContent);
 	$("#sku").val($(this).closest('tr').children()[1].textContent);
+	$("#category_id").val($(this).closest('tr').children()[3].textContent);
+
+	
 	
 });
 </script>

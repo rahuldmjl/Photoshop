@@ -186,10 +186,7 @@
   								</tr>
   							</thead>
   							<tbody>
-							
-						
-						
- @foreach ($pendinglist as $item)
+				 @foreach ($pendinglist as $item)
 <tr>
 		<td>{{$item->sku}}</td>
 	
@@ -199,16 +196,16 @@
 			
 	</td>
 		<td>
-			<form action="" method="POST">
-			<input type="hidden" value="{{$item->id}}" name="product_id"/>
-			<input type="hidden" value="{{$item->categoryid}}" name="category_id"/>
+			<form  method="POST" action="{{route('pending.submit')}}">
+			<input type="hidden" value="{{$item->id}}" name="product_id" id="product_id"/>
+			<input type="hidden" value="{{$item->categoryid}}" name="category_id" id="category_id"/>
 				@csrf
-				<select name="status" class="form-control" style="height:20px;width:150px;float: left;">
+				<select name="status" id="status" class="form-control" style="height:20px;width:150px;float: left;">
 					<option value="2">Pending</option>
 					<option value="1">In processing</option>
 					<option value="3">Done</option>
 				</select>
-				<input type="submit" style="height:20px;" class="btn btn-primary" value="Submit"/>
+				<input type="submit" style="height:20px;"  class="btn btn-submit btn-primary" value="Submit"/>
 		
 			</form>
 			</td>
@@ -253,7 +250,7 @@
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
 <script>
-		var buttonCommon = {
+var buttonCommon = {
         exportOptions: {
             format: {
                 body: function ( data, row, column, node ) {                    
@@ -298,7 +295,7 @@
     /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
   },
   "order": [[ 0, "desc" ]],
-  "deferLoading": <?=$totalproduct?>,
+  "deferLoading": <?=$totalpending->count()?>,
   "processing": true,
   "serverSide": true,
   "searching": false,

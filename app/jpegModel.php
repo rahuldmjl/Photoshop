@@ -30,7 +30,11 @@ public function getProduct()
       $data=array('next_department_status'=>'1');
       return EditingModel::where('product_id','=',$productid)->update($data);
   }
-  
+  public static function getUpdatestatusjpegnextdepartmentstatus($productid)
+  {
+      $data=array('next_department_status'=>'1');
+      return jpegModel::where('product_id','=',$productid)->update($data);
+  }
   public static function getDoneProduct()
   {
     return jpegModel::where('current_status',1)->get();

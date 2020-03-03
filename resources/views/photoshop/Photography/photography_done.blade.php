@@ -69,7 +69,7 @@
 		<td><?php echo $product['sku'];?></td>
 		<td><?php echo $product['color'];?>
 		</td>
-    <td>{{$category->name}}</td>
+    <td>{{$item->category->name}}</td>
     <td>Done</td>
 		<td style="    float: right;">
 			<form action="" method="POST">

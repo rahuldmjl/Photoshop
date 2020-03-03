@@ -65,10 +65,11 @@ class PhotoshopController extends Controller
         $maindata = photography_product::query();
      
         $datacount = $maindata->count();
-		$datacoll = $maindata->where('status','=',0);
-        $data["recordsTotal"] = $datacount;
-		$data["recordsFiltered"] = $datacount;
-		$data['deferLoading'] = $datacount;
+		$datacoll = $maindata->where('status',0);
+        $data["recordsTotal"] = $datacoll->count();
+		$data["recordsFiltered"] = $datacoll->count();
+        $data['deferLoading'] = $datacoll->count();
+        
         if(!empty($params['sku']))
         {
             $maindata->where('sku',$params['sku']);
@@ -94,17 +95,16 @@ class PhotoshopController extends Controller
                 $sku=$product->sku;
                 $category=$product->category->name;
                 $color=$product->color;
-                $action='
-               <form action="'.url('Photoshop/Photography/pending').'" method="POST">
-              <input type="hidden" value="'.$id.'" name="product_id"/>
-               <input type="hidden" value="'.$product->category->id.'" name="category_id"/>
-               <input type="hidden" name="_token" id="csrf-token" value="'.$token.'" />
-                   <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
+                $action1=route('pending.submit1');
+                $action='<form action="'.$action1.'" method="GET">
+              <input type="hidden" value="'.$id.'" name="product_id" id="product_id"/>
+               <input type="hidden" value="'.$product->category->id.'" name="category_id" />
+                   <select name="status" id="status" class="form-control" style="height:20px;width:150px;float: left;">
                        <option value="2">Pending</option>
                        <option value="1">In processing</option>
                        <option value="3">Done</option>
                    </select>
-                   <input type="submit" style="height:20px;" class="btn btn-primary" value="Submit"/>
+                   <input type="submit"  style="height:20px;" onclick="ajaxSave(this.val)" class="btn btn-submit1 btn-primary" value="Submit"/>
            
                </form>';
                 $data['data'][] = array( $sku, $color ,$category,$action);
@@ -115,15 +115,14 @@ class PhotoshopController extends Controller
         }
         echo json_encode($data);exit;
     }
+
      /*
     Photography done get data from this function
     */
     public function get_done_list()
     {
      $donelist=collect($this->photography)->where('status','=',3);
- 
-
-  return view('Photoshop/Photography/photography_done',compact('donelist'));
+     return view('Photoshop/Photography/photography_done',compact('donelist'));
     }
      /*
     Photography Rework get data from this function
@@ -141,14 +140,15 @@ class PhotoshopController extends Controller
     get all detail from photography pending list 
 
     */
-
+ 
     public function pending_list_submit(Request $request)
     {
+        
         $user=Auth::user();
         
         $photoshop=new photography();
      
-       
+     
         if($request->input('status') !="1")
         {
             
@@ -179,10 +179,53 @@ class PhotoshopController extends Controller
             
           
            }
-          
         }
- return  redirect('Photoshop/Photography/pending')->with('message','Photoshop Status Change Successfull');
+        return  redirect('Photoshop/Photography/pending')->with('message','Photoshop Status Change Successfull');
+      
+   }
+
+   public function pending_list_submit1(Request $request)
+   {
+    $user=Auth::user();
+        
+    $photoshop=new photography();
+ 
+ 
+    if($request->get('status') !="1")
+    {
+        
+
+        $photoshop->product_id=$request->get('product_id');
+
+        $photoshop->category_id=$request->get('category_id');
+        $photoshop->status=$request->get('status');
+        $photoshop->current_status='1';
+        $photoshop->next_department_status='0';
+     
+       //Cache table data Insert
+       if($request->get('status')=='3')
+       {
+       $photoshop->save();
+        $cache=array(
+            'product_id'=>$request->get('product_id'),
+            'url'=>PhotoshopHelper::getDepartment($request->url()),
+            'status'=>$request->get('status'),
+            'action_by'=>$user->id
+
+
+        );
+        
+         PhotoshopHelper::store_cache_table_data($cache);
+          photography_product::getUpdatestatusdone($request->get('product_id'));
+         photography::getUpdatestatusdone($request->get('product_id'));
+        
+      
+       }
     }
+    return  redirect('Photoshop/Photography/pending')->with('message','Photoshop Status Change Successfull');
+  
+
+   }
 /*
 done list submit for particular product change the photography status
 done to rework 
