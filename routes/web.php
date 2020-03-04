@@ -719,6 +719,8 @@ Photoshop Product COntroller
 
 Route::get('Photoshop/Product/uniquesku','PhotoshopProductController@unique_deifne_sku')->name('uniquesku');
 Route::post('Photoshop/Product/uniquesku','PhotoshopProductController@submit_unique')->name('submituniquesku');
+Route::get('Photoshop/Product/uniquesku/Edit/{id}','PhotoshopProductController@unique_deifne_sku_edit')->name('unique.product.edit');
+Route::post('Photoshop/Product/uniquesku/update','PhotoshopProductController@unique_deifne_sku_update')->name('unique.product.update');
 Route::get('Photoshop/Product/list','PhotoshopProductController@list_of_product')->name('product_list');
 Route::get('Photoshop/Product/add','PhotoshopProductController@add_of_product')->name('product_add');
 Route::get('Photoshop/Product/upload','PhotoshopProductController@upload_csv_list')->name('upload_list');

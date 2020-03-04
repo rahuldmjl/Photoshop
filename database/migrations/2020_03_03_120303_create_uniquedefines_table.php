@@ -16,6 +16,7 @@ class CreateUniquedefinesTable extends Migration
         Schema::create('uniquedefines', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->Integer('product_id');
+            $table->string('sku');
             $table->Integer('category_id');
             $table->Integer('sub_category_id');
             $table->string('skuname');

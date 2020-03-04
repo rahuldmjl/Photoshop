@@ -1,6 +1,8 @@
 
 @extends('layout.photo_navi')
-
+<?php
+use App\Uniquedefine;
+?>
 
 @section('title', 'Unique Sku')
 
@@ -62,17 +64,22 @@
                                   $i=1;
                                   ?>
 		 @foreach ($datacollection->unique('sku') as $item)
-	
-	
+	<?php 
+								if(!Uniquedefine::checkproduct($item->sku))
+								{
+								?>
 	     <tr>
 		<td wdth="30px"><?php echo $i++;?></td>
 		<td>{{$item->sku}}</td>
 			<td style="display: none">{{$item->product_id}}</td>
 			<td style="display: none">{{$item->category_id}}</td>
 		
-	
+		
 	
 	</tr>
+	<?php 
+	}
+	?>
 
 									
 									@endforeach
@@ -107,7 +114,7 @@
 					@csrf
 					<div class="form-group">
 						<label for="username">Sku</label>
-						<input class="form-control" type="text" id="sku" required="" placeholder="John Doe">
+						<input class="form-control" type="text" name="sku" id="sku">
 					</div>
 					<div class="form-group">
 						<input class="form-control" name="product_id" type="hidden" id="productid">

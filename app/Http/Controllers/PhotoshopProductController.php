@@ -282,8 +282,8 @@ class PhotoshopProductController extends Controller
 
 
    public function unique_deifne_sku()
-   {
-    DB::setTablePrefix('');
+   { 
+       DB::setTablePrefix('');
     $uniqueskudata=array();
     $uniquesku = DB::table('dml_photography_products')->select("*")
     ->join("dml_jpeg_models","dml_jpeg_models.product_id","=","dml_photography_products.id")
@@ -301,6 +301,7 @@ class PhotoshopProductController extends Controller
    {
        $uniqueproduct=new Uniquedefine();
         $uniqueproduct->product_id=$request->input('product_id');
+        $uniqueproduct->sku=$request->input('sku');
        $uniqueproduct->category_id=$request->input('category_id');
        $uniqueproduct->sub_category_id=$request->input('subcatid');
        $uniqueproduct->skuname=$request->input('skuname');
@@ -319,6 +320,29 @@ Get Done Unique List
    public function get_doneuniquelist()
    {
     $uniquelist=$this->uniqueskulist;
+   
     return view('Photoshop/Product/doneuniquelist',compact('uniquelist'));
+   }
+
+   public function unique_deifne_sku_edit($sku)
+   {
+       $data=Uniquedefine::getUniqueProduct($sku);
+       $subcat=$this->subcategory;
+    return view('Photoshop/Product/edit_unique_product',compact('data','subcat'));
+   }
+
+   public function unique_deifne_sku_update(Request $request)
+   {
+     
+      $updateskuname=$request->input('skuname');
+      $updatesub_category_id=$request->input('subcaegory');
+     
+      $updatedata=array(
+          'skuname'=>$updateskuname,
+          'sub_category_id'=>$updatesub_category_id,
+          
+      );
+      $unique=Uniquedefine::whereId($request->input('id'))->update($updatedata);
+      return redirect('Photoshop/Product/doneuniquelist')->with('msg','Product Update Successfull');
    }
 }

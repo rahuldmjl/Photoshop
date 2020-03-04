@@ -21,4 +21,16 @@ class Uniquedefine extends Model
     {
         return $this->hasOne('App\Subcategory','id','sub_category_id');
     }
+
+    public static function checkproduct($sku)
+    {
+
+        return Uniquedefine::where('sku','=',$sku)->exists();
+    }
+    public static function getUniqueProduct($sku)
+    {
+        return Uniquedefine::where('sku','=',$sku)->first();
+    }
+
+    
 }

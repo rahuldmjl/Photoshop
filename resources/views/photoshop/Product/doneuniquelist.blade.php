@@ -47,7 +47,7 @@
 						@if(Session::has('msg'))
 						<p class="alert alert-info">{{ Session::get('msg') }}</p>
 						@endif
-	                    <table class="table table-striped table-center word-break mt-0" id="Productlist">
+	                    <table class="table table-striped table-center word-break mt-0"  data-toggle="datatables">
   							<thead>
   								<tr class="bg-primary">
   									<th>Sku </th>
@@ -69,9 +69,8 @@
                             <td>{{$item->skuname}}</td>
                             <td>{{$item->getproduct->color}}</td>
                             <td>
-                                <a href="javascript:void(0);" class="color-content  table-action-style"><i class="material-icons md-18">edit</i></a>
-                                <a  data-href="javascript:void(0);" style="cursor:pointer;" class="color-content  btn-delete-subcategory table-action-style"><i class="material-icons md-18">delete</i></a>
-                            
+							<a class="color-content table-action-style" href="{{ route('unique.product.edit',['id'=>$item->getproduct->sku]) }}" style="cursor:pointer;"><i class="material-icons md-18">edit</i></a>
+									
                             </td>
                           
                             </tr> 
