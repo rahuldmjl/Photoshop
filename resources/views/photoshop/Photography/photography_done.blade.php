@@ -46,10 +46,11 @@
 					  @endif
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0"   data-toggle="datatables" >
+	                    <table class="table table-striped table-center word-break mt-0"  id="photographydonelist" >
   							<thead>
   								<tr class="bg-primary">
-  									<th>Sku</th>
+									  <th class="checkboxth"><label><input class="form-check-input" type="checkbox" name="chkAllProduct" id="chkAllProduct"><span class="label-text"></span></label></th>
+									<th>Sku</th>
 									  <th>Color</th>
                                       <th>Category</th>
                                       <th>Status</th>
@@ -66,6 +67,8 @@
 									?>
 	
 	<tr>
+		<td class="checkboxth"><label><input class="form-check-input chkProduct" data-id="{{$item->product_id}}" value="{{$item->product_id}}" type="checkbox" name="chkProduct[]" id="chkProduct{{$item->product_id}}"><span class="label-text"></label></td>
+								
 		<td><?php echo $product['sku'];?></td>
 		<td><?php echo $product['color'];?>
 		</td>
@@ -96,6 +99,7 @@
 							  </tbody>
 							  <tfoot>
 								<tr class="bg-primary">
+									<th></th>
 									<th>Sku</th>
 									<th>Color</th>
                                     <th>Category</th>
@@ -129,5 +133,14 @@
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"></script>
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
+<script>
+$('#photographydonelist').DataTable({
+	"aoColumnDefs": [
+        { "bSortable": false, "aTargets": [ 0] }, 
+       
+    ]
+});
+
+</script>
 
 @endsection

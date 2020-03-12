@@ -747,7 +747,7 @@ Route::get('Photoshop/Photography/done','PhotoshopController@get_done_list')->na
 Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('photography.done');
 Route::get('Photoshop/Photography/rework','PhotoshopController@get_rework_list')->name('photography.rework');
 Route::post('Photoshop/Photography/rework','PhotoshopController@submit_done_list')->name('photography.rework');
-
+Route::post('Photoshop/Photography/statusajax','PhotoshopController@statusajax_List')->name('statusajaxlist');
 
 
 /*

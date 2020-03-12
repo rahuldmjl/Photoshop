@@ -169,15 +169,32 @@
       	<div class="row">
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
-  					<div class="widget-heading clearfix">
+  					<div style="float:left" class=" col-sm-6 widget-heading clearfix">
   						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Photography Pending List</h5>
+						
+            </div>
+            <div style="float:left" class=" col-sm-6 widget-heading clearfix">
+  					<form action="javascript:void(0)" method="post">
+              <select style="float:left" id="bulk_status_change_status" class="form-control col-sm-6" name="status">
+                <option value="2">Pending</option>
+                <option value="1">In processing</option>
+                <option value="3">Done</option>
+              </select>
+              <input type="submit" id="bulk_status_change" style="float:right" value="submit" class="col-sm-4 btn btn-primary"/>
+  					</form>
 						
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
-  						
-	                    <table class="table table-striped table-center word-break mt-0" id="pendinglist" >
+  						<table class="table table-striped table-center word-break mt-0" id="pendinglist" >
   							<thead>
   								<tr class="bg-primary">
+                    <th class="checkboxth">
+                      <div class="checkbox checkbox-primary">
+                        <label>
+                            <input type="checkbox" id="chkAllProduct"> <span class="label-text"></span>
+                        </label>
+                    </div>
+                    </th>
   									<th>Sku</th>
 									  <th>Color</th>
 									  <th>Category</th>
@@ -188,6 +205,11 @@
   							<tbody>
 				 @foreach ($pendinglist as $item)
 <tr>
+  <td><div class="checkbox checkbox-primary">
+    <label>
+    <input type="checkbox" value="{{$item->id}}" class="chkProduct" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
+    </label>
+</div></td>
 		<td>{{$item->sku}}</td>
 	
 	<td>{{$item->color}} Gold</td>
@@ -216,6 +238,7 @@
 							  </tbody>
 							  <tfoot>
 								<tr class="bg-primary">
+                  <th>Check All</th>
 									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
@@ -262,9 +285,42 @@ var buttonCommon = {
             }
         }
 	};
+  $("#chkAllProduct").click(function(){
+    $('.chkProduct').prop('checked', this.checked);
+});
+$('#bulk_status_change').click(function(){
+  var action = $('#bulk_status_change_status option:selected').val();
+  var favorite = [];
+  if(action=='3'){
+   
+            $.each($("input[name='chkProduct']:checked"), function(){
+                favorite.push($(this).val());
+            });
+            
+            $.ajax({
+            type: 'POST',
+            url: "{{route('statusajaxlist')}}",
+          data: {action :action,status: favorite,"_token": "{{ csrf_token() }}"},
+            dataType: 'html',
+            success: function (data) {
+              console.log("Data length"+data);
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+     }else{
+     alert("Select Done Proper Data")
+    }
+
+});
 	var table = $('#pendinglist').DataTable({
 		"dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
   "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
+  "aoColumnDefs": [
+        { "bSortable": false, "aTargets": [ 0] }, 
+       
+    ],
   "buttons": [
 	$.extend( true, {}, buttonCommon, {
       extend: 'csv',
@@ -295,6 +351,7 @@ var buttonCommon = {
     /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
   },
   "order": [[ 0, "desc" ]],
+ 
   "deferLoading": <?=$totalpending->count()?>,
   "processing": true,
   "serverSide": true,
@@ -319,6 +376,7 @@ var buttonCommon = {
     if(color != ''){
       data.color = color;
     }
+   
  
 	},
 	complete: function(response){

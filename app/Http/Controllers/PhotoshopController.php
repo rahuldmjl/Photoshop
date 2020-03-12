@@ -92,6 +92,11 @@ class PhotoshopController extends Controller
             {
                 $token=$request->session()->token().
                $id=$product->id;
+               $check='<div class="checkbox checkbox-primary">
+               <label>
+               <input type="checkbox" class="chkProduct" value="'.$id.'" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
+               </label>
+           </div>';
                 $sku=$product->sku;
                 $category=$product->category->name;
                 $color=$product->color;
@@ -107,10 +112,10 @@ class PhotoshopController extends Controller
                    <input type="submit"  style="height:20px;" onclick="ajaxSave(this.val)" class="btn btn-submit1 btn-primary" value="Submit"/>
            
                </form>';
-                $data['data'][] = array( $sku, $color ,$category,$action);
+                $data['data'][] = array( $check,$sku, $color ,$category,$action);
             }
         }else{
-            $data['data'][] = array('', '', '', '', '');
+            $data['data'][] = array('','', '', '', '', '');
 	
         }
         echo json_encode($data);exit;
@@ -201,19 +206,17 @@ class PhotoshopController extends Controller
         $photoshop->status=$request->get('status');
         $photoshop->current_status='1';
         $photoshop->next_department_status='0';
-     
+     $cache=array();
        //Cache table data Insert
        if($request->get('status')=='3')
        {
        $photoshop->save();
-        $cache=array(
+        $cache[]=array(
             'product_id'=>$request->get('product_id'),
             'url'=>PhotoshopHelper::getDepartment($request->url()),
             'status'=>$request->get('status'),
             'action_by'=>$user->id
-
-
-        );
+         );
         
          PhotoshopHelper::store_cache_table_data($cache);
           photography_product::getUpdatestatusdone($request->get('product_id'));
@@ -265,5 +268,53 @@ done to rework
         
     }
 
+  public function statusajax_List(Request $request)
+  {
+    $user=Auth::user();
+   $status=$request->get('status');
+   $action=$request->get('action');
+   $url="";
+   $photoshop=array();
+   $cache=array();
+   $length=count($status);
+   $url=PhotoshopHelper::getDepartment($request->url());
   
+ for($s=0;$s<$length;$s++){
+
+  $pid=$status[$s];
+  $product=photography_product::getProductbyId($pid);
+ 
+  foreach($product as $p)
+  {
+    $product_id=$p->id;
+    $category_id=$p->categoryid;
+  }
+  $photoshop[]=array(
+      'product_id'=>$product_id,
+      'category_id'=>$category_id,
+      'status'=>$action,
+      'current_status'=>'1',
+      'next_department_status'=>'0'
+  );
+  
+    $cache[]=array(
+        'product_id'=>$product_id,
+        'url'=>PhotoshopHelper::getDepartment($request->url()),
+        'status'=>$action,
+        'action_by'=>$user->id
+     );
+    
+     
+ 
+ }
+
+//photography::insert($photoshop);
+$mm=PhotoshopHelper::store_cache_table_data($cache);
+echo json_encode($mm);
+
+ 
+  
+  
+   
+  }
 }
