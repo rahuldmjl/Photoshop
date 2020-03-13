@@ -92,7 +92,7 @@ class PhotoshopController extends Controller
             {
                 $token=$request->session()->token().
                $id=$product->id;
-               $check='<div class="checkbox checkbox-primary">
+               $check='<div class="checkbox checkbox-primary" style="width: 100px;">
                <label>
                <input type="checkbox" class="chkProduct" value="'.$id.'" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
                </label>
@@ -237,10 +237,11 @@ done to rework
     {
         
         $user=Auth::user();
+        $cache=array();
         if($request->input('status') !='0')
         {
             //cache table data insert 
-            $cache=array(
+            $cache[]=array(
                 'product_id'=>$request->input('product_id'),
                 'url'=>PhotoshopHelper::getDepartment($request->url()),
                 'status'=>$request->input('status'),
@@ -271,11 +272,12 @@ done to rework
   public function statusajax_List(Request $request)
   {
     $user=Auth::user();
+    $response=array();
    $status=$request->get('status');
    $action=$request->get('action');
    $url="";
    $photoshop=array();
-   $cache=array();
+  
    $length=count($status);
    $url=PhotoshopHelper::getDepartment($request->url());
   
@@ -294,27 +296,49 @@ done to rework
       'category_id'=>$category_id,
       'status'=>$action,
       'current_status'=>'1',
-      'next_department_status'=>'0'
+      'next_department_status'=>'0',
+      'created_at'=>date("Y-m-d H:i:s"),
+      'updated_at'=>date("Y-m-d H:i:s"),
   );
   
-    $cache[]=array(
-        'product_id'=>$product_id,
-        'url'=>PhotoshopHelper::getDepartment($request->url()),
-        'status'=>$action,
-        'action_by'=>$user->id
-     );
-    
-     
- 
- }
+  $cache=array(
+    'product_id'=>$product_id,
+    'url'=>PhotoshopHelper::getDepartment($request->url()),
+    'status'=>$request->input('action'),
+    'action_by'=>$user->id
 
-//photography::insert($photoshop);
-$mm=PhotoshopHelper::store_cache_table_data($cache);
-echo json_encode($mm);
+
+);
+
+ PhotoshopHelper::store_cache_table_data($cache);
+ photography_product::getUpdatestatusdone($product_id);
+    
+    
+  
+ }
+ 
+
+if(photography::insert($photoshop))
+{
+    
+    //$mm=PhotoshopHelper::store_cache_table_data($cache);
+    $response['status']="success";
+    $response['message']="Product State Change Successfull";
+}else{
+    $response['status']="fail";
+    $response['message']="Product State Change Successfull";
+}
+
+
+   $response['status']="success";
+    $response['message']="Product State Change Successfull";
+   
+
+echo json_encode($response);
 
  
   
   
    
-  }
+}
 }

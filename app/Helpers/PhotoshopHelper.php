@@ -9,6 +9,7 @@ use DateTime;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
 use App\photography_product;
+use App\photoshop_cache;
 class PhotoshopHelper
 {
 
@@ -79,6 +80,13 @@ public static function addintoCasheTable($data)
                 ->insert($data);
 
 }
+public static function store_cache_table_dataajax($cache)
+{
+    $data = $request->only('product_id','action_name','action_by');
+    $test['token'] = time();
+    $test['data'] = json_encode($cache);
+    return photoshop_cache::insert($test);
 
+}
 }   
 ?>

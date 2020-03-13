@@ -93,11 +93,9 @@
 	
 	
 	</tr>
-
-									
-									@endforeach
-							  </tbody>
-							  <tfoot>
+	@endforeach
+	  </tbody>
+		 <tfoot>
 								<tr class="bg-primary">
 									<th></th>
 									<th>Sku</th>

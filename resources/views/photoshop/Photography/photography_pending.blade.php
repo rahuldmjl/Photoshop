@@ -169,18 +169,20 @@
       	<div class="row">
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
-  					<div style="float:left" class=" col-sm-6 widget-heading clearfix">
+  					<div style="float:left" class=" col-sm-4 widget-heading clearfix">
   						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Photography Pending List</h5>
 						
             </div>
-            <div style="float:left" class=" col-sm-6 widget-heading clearfix">
-  					<form action="javascript:void(0)" method="post">
+          	<form action="javascript:void(0)" method="post">
+              <div style="float:left" class=" col-sm-8 widget-heading clearfix">
+  				
               <select style="float:left" id="bulk_status_change_status" class="form-control col-sm-6" name="status">
                 <option value="2">Pending</option>
                 <option value="1">In processing</option>
                 <option value="3">Done</option>
               </select>
-              <input type="submit" id="bulk_status_change" style="float:right" value="submit" class="col-sm-4 btn btn-primary"/>
+             
+              <input type="submit" id="bulk_status_change" style="float:left;margin-left:30px" value="submit" class="col-sm-4 btn btn-primary"/>
   					</form>
 						
   					</div>
@@ -189,7 +191,7 @@
   							<thead>
   								<tr class="bg-primary">
                     <th class="checkboxth">
-                      <div class="checkbox checkbox-primary">
+                      <div class="checkbox checkbox-primary" style="width: 100px;">
                         <label>
                             <input type="checkbox" id="chkAllProduct"> <span class="label-text"></span>
                         </label>
@@ -205,8 +207,8 @@
   							<tbody>
 				 @foreach ($pendinglist as $item)
 <tr>
-  <td><div class="checkbox checkbox-primary">
-    <label>
+  <td><div class="checkbox checkbox-primary" style="width: 100px;">
+    <label >
     <input type="checkbox" value="{{$item->id}}" class="chkProduct" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
     </label>
 </div></td>
@@ -296,14 +298,27 @@ $('#bulk_status_change').click(function(){
             $.each($("input[name='chkProduct']:checked"), function(){
                 favorite.push($(this).val());
             });
-            
             $.ajax({
             type: 'POST',
             url: "{{route('statusajaxlist')}}",
-          data: {action :action,status: favorite,"_token": "{{ csrf_token() }}"},
+            data: {action :action,status: favorite,"_token": "{{ csrf_token() }}"},
             dataType: 'html',
+             
             success: function (data) {
-              console.log("Data length"+data);
+              var res = JSON.parse(data);
+             
+             if(res.status=="success"){
+             swal({
+									title: 'Success',
+									text: res.message,
+									type: 'success',
+									buttonClass: 'btn btn-primary'
+								  });
+								
+              
+             }
+             table.draw();
+             
             },
             error: function (data) {
                 console.log('Error:', data);
