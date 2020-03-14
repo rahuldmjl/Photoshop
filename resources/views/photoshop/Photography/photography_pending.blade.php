@@ -45,7 +45,8 @@
                   </li>
                   <li class="nav-item active"><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
                   </li>
-                
+                  <li class="nav-item "><a class="nav-link" href="#changestatus" data-toggle="tab" aria-expanded="true">Change Status</a>
+                  </li>
                 </ul>
                 
               
@@ -153,6 +154,38 @@
                         </div>
                       </div>
                     </div>	</div>
+                    <div class="tab-pane" id="changestatus">
+                      <div class="widget-list">
+                        <div class="row">
+                          <!-- Counter: Sales -->
+                          <div class="col-md-2 col-sm-6 widget-holder widget-full-height">
+                           
+                          </div>
+                          <div class="col-md-6 col-sm-6 widget-holder widget-full-height">
+                            <form action="javascript:void(0)" method="post">
+                              <div style="float:left" class="widget-heading clearfix">
+                          
+                              <select style="float:left" id="bulk_status_change_status" class="form-control" name="status">
+                                <option value="2">Pending</option>
+                                <option value="1">In processing</option>
+                                <option value="3">Done</option>
+                              </select>
+                            </div>
+                            <div style="float:left" class="widget-heading clearfix">
+                          
+                              <input type="submit" id="bulk_status_change" style="float:left;margin-left:30px" value="submit" class="btn btn-primary"/>
+                            </div>
+                            </form>
+                            
+                          </div>
+                          <div class="col-md-2 col-sm-6 widget-holder widget-full-height">
+                           
+                          </div>
+                        </div>
+                        <!-- /.row -->
+                    
+                      </div>
+                    </div>
                   
                 </div>
                 <!-- /.tab-content -->
@@ -169,23 +202,12 @@
       	<div class="row">
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
-  					<div style="float:left" class=" col-sm-4 widget-heading clearfix">
+  					<div style="float:left" class="widget-heading clearfix">
   						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Photography Pending List</h5>
 						
             </div>
-          	<form action="javascript:void(0)" method="post">
-              <div style="float:left" class=" col-sm-8 widget-heading clearfix">
+          	
   				
-              <select style="float:left" id="bulk_status_change_status" class="form-control col-sm-6" name="status">
-                <option value="2">Pending</option>
-                <option value="1">In processing</option>
-                <option value="3">Done</option>
-              </select>
-             
-              <input type="submit" id="bulk_status_change" style="float:left;margin-left:30px" value="submit" class="col-sm-4 btn btn-primary"/>
-  					</form>
-						
-  					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
   						<table class="table table-striped table-center word-break mt-0" id="pendinglist" >
   							<thead>
@@ -300,7 +322,7 @@ $('#bulk_status_change').click(function(){
             });
             $.ajax({
             type: 'POST',
-            url: "{{route('statusajaxlist')}}",
+            url: "{{route('changeajaxlist')}}",
             data: {action :action,status: favorite,"_token": "{{ csrf_token() }}"},
             dataType: 'html',
              

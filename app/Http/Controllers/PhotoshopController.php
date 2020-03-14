@@ -100,8 +100,10 @@ class PhotoshopController extends Controller
                 $sku=$product->sku;
                 $category=$product->category->name;
                 $color=$product->color;
+                $csrf=csrf_field();
                 $action1=route('pending.submit1');
-                $action='<form action="'.$action1.'" method="GET">
+                $action='<form action="" method="post">
+                '.$csrf.'
               <input type="hidden" value="'.$id.'" name="product_id" id="product_id"/>
                <input type="hidden" value="'.$product->category->id.'" name="category_id" />
                    <select name="status" id="status" class="form-control" style="height:20px;width:150px;float: left;">
@@ -126,8 +128,10 @@ class PhotoshopController extends Controller
     */
     public function get_done_list()
     {
-     $donelist=collect($this->photography)->where('status','=',3);
-     return view('Photoshop/Photography/photography_done',compact('donelist'));
+     $category=$this->category;
+     $donelist=collect($this->photography)->where('status','=',3)->take(10);
+     
+     return view('Photoshop/Photography/photography_done',compact('donelist','category'));
     }
      /*
     Photography Rework get data from this function
@@ -136,7 +140,7 @@ class PhotoshopController extends Controller
     {
      
        
-         $reworklist=collect($this->photography)->where('status','=',4);
+         $reworklist=collect($this->photography)->where('status','=',4)->take(10);
       return view('Photoshop/Photography/photography_rework',compact('reworklist'));
     }
 
@@ -189,59 +193,19 @@ class PhotoshopController extends Controller
       
    }
 
-   public function pending_list_submit1(Request $request)
-   {
-    $user=Auth::user();
-        
-    $photoshop=new photography();
  
- 
-    if($request->get('status') !="1")
-    {
-        
-
-        $photoshop->product_id=$request->get('product_id');
-
-        $photoshop->category_id=$request->get('category_id');
-        $photoshop->status=$request->get('status');
-        $photoshop->current_status='1';
-        $photoshop->next_department_status='0';
-     $cache=array();
-       //Cache table data Insert
-       if($request->get('status')=='3')
-       {
-       $photoshop->save();
-        $cache[]=array(
-            'product_id'=>$request->get('product_id'),
-            'url'=>PhotoshopHelper::getDepartment($request->url()),
-            'status'=>$request->get('status'),
-            'action_by'=>$user->id
-         );
-        
-         PhotoshopHelper::store_cache_table_data($cache);
-          photography_product::getUpdatestatusdone($request->get('product_id'));
-         photography::getUpdatestatusdone($request->get('product_id'));
-        
-      
-       }
-    }
-    return  redirect('Photoshop/Photography/pending')->with('message','Photoshop Status Change Successfull');
-  
-
-   }
 /*
 done list submit for particular product change the photography status
 done to rework 
 */
     public function submit_done_list(Request $request)
     {
-        
         $user=Auth::user();
         $cache=array();
         if($request->input('status') !='0')
         {
             //cache table data insert 
-            $cache[]=array(
+            $cache=array(
                 'product_id'=>$request->input('product_id'),
                 'url'=>PhotoshopHelper::getDepartment($request->url()),
                 'status'=>$request->input('status'),
@@ -264,8 +228,6 @@ done to rework
         else{
             return redirect()->back()->with('success', 'Select the photography status');
         }
-  
-        
         
     }
 
@@ -340,5 +302,132 @@ echo json_encode($response);
   
   
    
+}
+
+public function doneAjaxList(Request $request){
+
+    $data=array();
+        $params = $request->post();
+        $params = $request->post();
+		$start = (!empty($params['start']) ? $params['start'] : 0);
+		$length = (!empty($params['length']) ? $params['length'] : 10);
+		$stalen = $start / $length;
+		$curpage = $stalen;
+        $maindata = photography::query();
+        $datacount = $maindata->count();
+		$datacoll = $maindata->where('status',3);
+        $data["recordsTotal"] = $datacoll->count();
+		$data["recordsFiltered"] = $datacoll->count();
+        $data['deferLoading'] = $datacoll->count();
+        if(!empty($params['category']))
+        {
+            $maindata->where('category_id',$params['category']);
+        }
+        if(!empty($params['sku'])){
+            $maindata->where('product_id',$params['sku']);
+        }
+        $donecollection = $datacoll->take($length)->offset($start)->get();
+      if(count($donecollection)>0){
+        foreach($donecollection as $key => $product)
+        {
+            $csrf=csrf_field();
+           $p=$product->getProduct;
+           $ca=$product->category;
+           $check='<div class="checkbox checkbox-primary" style="width: 100px;">
+           <label>
+           <input type="checkbox" class="chkProduct" value="'.$p->id.'" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
+           </label>
+       </div>';
+            $token=$request->session()->token();
+             $action='<form action="" method="post" style="margin-right: 110px;">
+             '.$csrf.'
+            <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
+             <input type="hidden" value="'.$product->category->id.'" name="category_id" />
+                 <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
+                     <option value="0">select status</option>
+                     <option value="4">Rework</option>
+                </select>
+                 <input type="submit"  style="height:20px;margin-left:10px" onclick="ajaxSave(this.val)" class="btn btn-submit1 btn-primary" value="Submit"/>
+         
+             </form>';
+            $data['data'][] = array($check,$p->sku, $p->color, $ca->name, 'Done', $action);
+        }
+
+       
+      }else{
+        $data['data'][] = array('','','', '', '', '', '');
+      }
+          
+      
+         echo json_encode($data);exit;
+}
+
+public function status_ajax_List(Request $request){
+    $user=Auth::user();
+    $response=array();
+    $department=PhotoshopHelper::getDepartment($request->url());
+    $data=$request->get('status');
+    $action=$request->get('action');
+    $response['department']=$department;
+    $productidarray=array();
+    $response['data']=$data;
+    $photoshop=array();
+    if($data !=null){
+        $length=count($data);
+        for($s=0;$s<$length;$s++){
+
+            $pid=$data[$s];
+            $product=photography_product::getProductbyId($pid);
+ 
+            foreach($product as $p)
+            {
+              $product_id=$p->id;
+              $category_id=$p->categoryid;
+            }
+            $photoshop=array(
+                'product_id'=>$product_id,
+                'category_id'=>$category_id,
+                'status'=>$action,
+                'current_status'=>'1',
+                'next_department_status'=>'0',
+                'created_at'=>date("Y-m-d H:i:s"),
+                'updated_at'=>date("Y-m-d H:i:s"),
+            );
+            
+            $cache=array(
+              'product_id'=>$product_id,
+              'url'=>PhotoshopHelper::getDepartment($request->url()),
+              'status'=>$request->input('action'),
+              'action_by'=>$user->id
+          );
+          PhotoshopHelper::store_cache_table_data($cache);
+          if($action=='4'){
+           photography::update_photography_status($product_id,$action);
+          }
+         if($action=='3'){
+            photography::inserttojson($photoshop);
+            photography::updateprodtographypending($product_id);
+         }
+          
+         
+        }
+
+        $response['status']="success";
+        $response['message']="Status Change Successfully";
+       
+    }else{
+        $response['status']="fail";
+        $response['message']="Please Check The Product";
+    }
+ 
+    echo json_encode($response);
+}
+
+public function ReworkAjaxList(Request $request){
+
+    $data=array();
+    $data['status']='success';
+    echo json_encode($data);
+    exit;
 }
 }

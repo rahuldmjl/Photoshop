@@ -6,6 +6,7 @@
 
 @section('distinct_head')
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link href="<?=URL::to('/');?>/cdnjs.cloudflare.com/ajax/libs/datatables/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <style>
     table, td, th {
@@ -46,7 +47,7 @@
 					  @endif
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0"   data-toggle="datatables" >
+	                    <table class="table table-striped table-center word-break mt-0"   id="photographyrework" >
   							<thead>
   								<tr class="bg-primary">
   									<th>Sku</th>
@@ -113,6 +114,7 @@
   <!-- /.widget-list -->
 </main>
 <!-- /.main-wrappper -->
+<input type="hidden" id="reworklistproductajax" value="{{route('reworkajaxlist')}}">
 
 <style type="text/css">
 .form-control[readonly] {background-color: #fff;}
@@ -129,5 +131,78 @@
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"></script>
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
-
+<script>
+		$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+var buttonCommon = {
+        exportOptions: {
+            format: {
+                body: function ( data, row, column, node ) {                    
+                    if (column === 3) {
+                      data = data.replace(/(&nbsp;|<([^>]+)>)/ig, "");
+                    }
+                    return data;
+                }
+            }
+        }
+	};
+var table=$('#photographyrework').DataTable({
+	"aoColumnDefs": [
+        { "bSortable": false, "aTargets": [ 0] }, 
+       
+    ],
+	"dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
+  "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
+  "aoColumnDefs": [
+        { "bSortable": false, "aTargets": [ 0] }, 
+       
+    ],
+  "buttons": [
+	$.extend( true, {}, buttonCommon, {
+      extend: 'csv',
+      footer: false,
+      title: 'Photography-product-done-list',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2,3],
+          orthogonal: 'export'
+      }
+    }),
+	$.extend( true, {}, buttonCommon, {
+      extend: 'excel',
+      footer: false,
+      title: 'Photography-product-done-list',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2,3],
+          orthogonal: 'export'
+      }
+    })
+  ],
+  "language": {
+    "search": "",
+    "infoEmpty": "No matched records found",
+    "zeroRecords": "No matched records found",
+    "emptyTable": "No data available in table",
+    /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
+  },
+  "order": [[ 0, "desc" ]],
+ 
+  "deferLoading": <?=$reworklist->count()?>,
+  "processing": true,
+  "serverSide": true,
+  "searching": false,
+  "serverMethod": "post",
+  "ajax":{
+	"url": $("#reworklistproductajax").val(),
+	 "data": function(data, callback){
+		data._token = "{{ csrf_token() }}";
+	}
+  }
+ 
+});
+</script>
 @endsection

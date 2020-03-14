@@ -744,12 +744,13 @@ Route::get('Photoshop/Photography/pendingajax','PhotoshopController@pending_list
 Route::post('Photoshop/Photography/ajaxlist1','PhotoshopController@ajax_get_pending_list')->name('pendingajax.list');
 Route::get('Photoshop/Photography/pending','PhotoshopController@get_pending_list')->name('photography.pending');
 Route::get('Photoshop/Photography/done','PhotoshopController@get_done_list')->name('photography.done');
-Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('photography.done');
+Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('submit_done_list');
 Route::get('Photoshop/Photography/rework','PhotoshopController@get_rework_list')->name('photography.rework');
 Route::post('Photoshop/Photography/rework','PhotoshopController@submit_done_list')->name('photography.rework');
 Route::post('Photoshop/Photography/statusajax','PhotoshopController@statusajax_List')->name('statusajaxlist');
-
-
+Route::post('Photoshop/Photography/doneajaxlist1','PhotoshopController@doneAjaxList')->name('doneajaxlist');
+Route::post('Photoshop/Photography/photographyajax','PhotoshopController@status_ajax_List')->name('changeajaxlist');
+Route::post('Photoshop/Photography/reworkajaxlist','PhotoshopController@ReworkAjaxList')->name('reworkajaxlist');
 /*
 psd department Routing
 */

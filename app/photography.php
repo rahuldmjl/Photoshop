@@ -63,8 +63,14 @@ class photography extends Model
     jpegModel::where('product_id','=',$product_id)->delete();
     psd::where('product_id','=',$product_id)->delete(); 
    
-  
-  
   }
- 
+  public static function deletefrom_photography($product_id){
+
+   
+    return photography::where('product_id','=',$product_id)->delete();
+  }
+ public static function inserttojson($data){
+
+  return photography::insert($data);
+ }
 }
