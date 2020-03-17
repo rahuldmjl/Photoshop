@@ -352,9 +352,15 @@ $('#bulk_status_change').click(function(){
 	"data": function(data, callback){
 		data._token = "{{ csrf_token() }}";
 		var category = $('#category').children("option:selected").val();
+
     if(category != ''){
       data.category = category;
     }
+	var sku=$('#sku').val();
+	if(sku !=''){
+		data.sku=sku;
+	}
+	
      showLoader();
    
  },

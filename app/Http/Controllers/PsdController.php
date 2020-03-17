@@ -39,7 +39,7 @@ class PsdController extends Controller
     {
       $category=$this->category;
       $psdpending=collect($this->photography)->where('status','=','3')->where('next_department_status','=','0');
-       return view('Photoshop/PSD/psd_pending',compact('psdpending','category'));
+      return view('Photoshop/PSD/psd_pending',compact('psdpending','category'));
     }
     /*
     Get done List 
@@ -146,12 +146,18 @@ public function Ajax_pending_list(Request $request){
     {
         $maindata->where('category_id',$params['category']);
     }
+    if(!empty($params['sku']))
+    {
+        $maindata->where('product_id',$params['sku']);
+    }
+    
      $datacollection = $datacoll->take($length)->offset($start)->get();
         
      if(count($datacollection) > 0)
      {
          foreach($datacollection as $key => $product)
          {
+
              $token=$request->session()->token().
             $id=$product->product_id;
             $check='<div class="checkbox checkbox-primary" style="width: 100px;">

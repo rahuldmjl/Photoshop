@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\psd;
 use Auth;
 use DB;
+use App\category;
 use App\Placement;
 use App\Helpers\PhotoshopHelper;
 class PlacementController extends Controller
@@ -14,9 +15,10 @@ class PlacementController extends Controller
     public $psd;
     public $user;
     public $placement;
+    public $category;
     public function __construct()
     {
-       
+        $this->category=collect(category::all());
         $this->psd=psd::getPsdProduct();
         $user=Auth::user();
         $this->placement=Placement::all();
@@ -24,21 +26,22 @@ class PlacementController extends Controller
     }
    //get Placement Pending List
     public function get_placement_pending_list(){
-       
+          $category=$this->category;
          $list=collect($this->psd)->where('status','=','3')->where('next_department_status','=','0');
-       return View('Photoshop/Placement/placement_pending',compact('list'));
+       return View('Photoshop/Placement/placement_pending',compact('list','category'));
 
     }
     public function get_placement_done_list()
-    {
+    {  
+        $category=$this->category;
         $done_list=collect($this->placement)->where('status',3);
-       return View('Photoshop/Placement/placement_done',compact('done_list'));
+       return View('Photoshop/Placement/placement_done',compact('done_list','category'));
     }
 
     public function get_placement_rework_list()
-    {
+    {    $category=$this->category;
         $rework_list=collect($this->placement)->where('status',4);
-        return View('Photoshop/Placement/placement_rework',compact('rework_list'));
+        return View('Photoshop/Placement/placement_rework',compact('rework_list','category'));
     }
 
     public function get_pending_list_data_submit(Request $request)
