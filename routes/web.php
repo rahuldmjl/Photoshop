@@ -757,11 +757,14 @@ psd department Routing
 Route::get('Photoshop/psd','PsdController@index')->name('psd.index');
 Route::post('Photoshop/psd/pending','PsdController@get_data_from_psd_pending_list')->name('psd.pending');
 Route::get('Photoshop/psd/pending','PsdController@get_psd_pending_list')->name('psd.pending');
+Route::post('Photoshop/psd/pendinglistajax','PsdController@Ajax_pending_list')->name('psdpendinglist');
 Route::get('Photoshop/psd/done','PsdController@get_psd_done_list')->name('psd.done');
 Route::post('Photoshop/psd/done','PsdController@submit_done_list')->name('psd.done');
 Route::get('Photoshop/psd/rework','PsdController@get_psd_rework_list')->name('psd.rework');
 Route::post('Photoshop/psd/rework','PsdController@submit_done_list')->name('psd.rework');
-
+Route::post('Photoshop/psd/rework','PsdController@Status_change')->name('psdchangeajaxlist');
+Route::post('Photoshop/psd/ajaxgetdatatable','PsdController@ajax_table')->name('ajax_table');
+Route::post('Photoshop/psd/ajaxgetdatatable1','PsdController@Ajax_pending_rework_list')->name('rework_ajax_table');
 //Placement Routing
 
 Route::get('Photoshop/Placement/pending','PlacementController@get_placement_pending_list')->name('placement_pending');

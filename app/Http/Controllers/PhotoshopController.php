@@ -139,9 +139,9 @@ class PhotoshopController extends Controller
     public function get_rework_list()
     {
      
-       
+        $category=$this->category;
          $reworklist=collect($this->photography)->where('status','=',4)->take(10);
-      return view('Photoshop/Photography/photography_rework',compact('reworklist'));
+      return view('Photoshop/Photography/photography_rework',compact('reworklist','category'));
     }
 
     /*
@@ -155,24 +155,26 @@ class PhotoshopController extends Controller
         
         $user=Auth::user();
         
-        $photoshop=new photography();
+        $photoshop=array();
      
-     
+     echo $request->get('product_id');
         if($request->input('status') !="1")
         {
             
-
-            $photoshop->product_id=$request->input('product_id');
-
-            $photoshop->category_id=$request->input('category_id');
-            $photoshop->status=$request->input('status');
-            $photoshop->current_status='1';
-            $photoshop->next_department_status='0';
-         
+            $photoshop[]=array(
+                'product_id'=>$request->input('product_id'),
+                'category_id'=>$request->input('category_id'),
+                'status'=>$request->input('status'),
+                'current_status'=>'1',
+                'next_department_status'=>'0',
+                'created_at'=>date("Y-m-d H:i:s"),
+                'updated_at'=>date("Y-m-d H:i:s"),
+            );
+           
            //Cache table data Insert
            if($request->input('status')=='3')
            {
-           $photoshop->save();
+           photography::inserttojson($photoshop);
             $cache=array(
                 'product_id'=>$request->input('product_id'),
                 'url'=>PhotoshopHelper::getDepartment($request->url()),
@@ -306,7 +308,7 @@ echo json_encode($response);
 
 public function doneAjaxList(Request $request){
 
-    $data=array();
+        $data=array();
         $params = $request->post();
         $params = $request->post();
 		$start = (!empty($params['start']) ? $params['start'] : 0);
@@ -368,50 +370,78 @@ public function status_ajax_List(Request $request){
     $department=PhotoshopHelper::getDepartment($request->url());
     $data=$request->get('status');
     $action=$request->get('action');
-    $response['department']=$department;
+    
     $productidarray=array();
-    $response['data']=$data;
+   
     $photoshop=array();
+    $cache=array();
     if($data !=null){
         $length=count($data);
         for($s=0;$s<$length;$s++){
 
             $pid=$data[$s];
             $product=photography_product::getProductbyId($pid);
- 
-            foreach($product as $p)
-            {
-              $product_id=$p->id;
-              $category_id=$p->categoryid;
-            }
-            $photoshop=array(
-                'product_id'=>$product_id,
-                'category_id'=>$category_id,
-                'status'=>$action,
-                'current_status'=>'1',
-                'next_department_status'=>'0',
-                'created_at'=>date("Y-m-d H:i:s"),
-                'updated_at'=>date("Y-m-d H:i:s"),
-            );
             
-            $cache=array(
-              'product_id'=>$product_id,
-              'url'=>PhotoshopHelper::getDepartment($request->url()),
-              'status'=>$request->input('action'),
-              'action_by'=>$user->id
-          );
-          PhotoshopHelper::store_cache_table_data($cache);
-          if($action=='4'){
-           photography::update_photography_status($product_id,$action);
-          }
-         if($action=='3'){
-            photography::inserttojson($photoshop);
-            photography::updateprodtographypending($product_id);
-         }
-          
-         
+            if(photography::checkexist($pid)){
+                $response['existed']="Existed";
+                if($action=='4'){
+                    $response['sds']="Rework";
+                    $cache=array(
+                        'product_id'=>$pid,
+                        'url'=>PhotoshopHelper::getDepartment($request->url()),
+                        'status'=>$request->input('action'),
+                        'action_by'=>$user->id
+                    );
+                    PhotoshopHelper::store_cache_table_data($cache);
+                    photography::update_photography_status($pid,'4');
+                    photography::updateprodtographystatus($pid);
+                    photography::delete_from_below_department($pid);
+                }
+                if($action=='3'){
+                    $response['sds']="Rework Done";
+                    $cache=array(
+                        'product_id'=>$pid,
+                        'url'=>PhotoshopHelper::getDepartment($request->url()),
+                        'status'=>$request->input('action'),
+                        'action_by'=>$user->id
+                    );
+                    PhotoshopHelper::store_cache_table_data($cache);
+                    photography::update_photography_status($pid,'3');
+                    photography::updateprodtographypending($pid);
+                }
+            }else{
+                $response['existed']="Not Existed";
+                foreach($product as $p)
+                {
+                  $product_id=$p->id;
+                  $category_id=$p->categoryid;
+                }
+               
+                $photoshop=array(
+                    'product_id'=>$product_id,
+                    'category_id'=>$category_id,
+                    'status'=>$action,
+                    'current_status'=>'1',
+                    'next_department_status'=>'0',
+                    'created_at'=>date("Y-m-d H:i:s"),
+                    'updated_at'=>date("Y-m-d H:i:s"),
+                );
+                
+                $cache=array(
+                  'product_id'=>$product_id,
+                  'url'=>PhotoshopHelper::getDepartment($request->url()),
+                  'status'=>$request->input('action'),
+                  'action_by'=>$user->id
+              );
+              PhotoshopHelper::store_cache_table_data($cache);
+             photography::inserttojson($photoshop);
+             photography::updateprodtographypending($product_id);
+            }
+           
+       
+       
         }
-
+        
         $response['status']="success";
         $response['message']="Status Change Successfully";
        
@@ -426,7 +456,57 @@ public function status_ajax_List(Request $request){
 public function ReworkAjaxList(Request $request){
 
     $data=array();
-    $data['status']='success';
+    $data['ajaxrequest']=$request->get('status');
+    $params = $request->post();
+    $params = $request->post();
+    $start = (!empty($params['start']) ? $params['start'] : 0);
+    $length = (!empty($params['length']) ? $params['length'] : 10);
+    $stalen = $start / $length;
+    $curpage = $stalen;
+    $maindata = photography::query();
+    $datacount = $maindata->count();
+    $datacoll = $maindata->where('status',4);
+    $data["recordsTotal"] = $datacoll->count();
+    $data["recordsFiltered"] = $datacoll->count();
+    $data['deferLoading'] = $datacoll->count();
+    if(!empty($params['category']))
+    {
+        $maindata->where('category_id',$params['category']);
+    }
+    if(!empty($params['sku'])){
+        $maindata->where('product_id',$params['sku']);
+    }
+    $donecollection = $datacoll->take($length)->offset($start)->get();
+    if(count($donecollection)>0){
+        foreach($donecollection as $key => $product)
+        {
+            $csrf=csrf_field();
+           $p=$product->getProduct;
+           $ca=$product->category;
+           $check='<div class="checkbox checkbox-primary" style="width: 100px;">
+           <label>
+           <input type="checkbox" class="chkProduct" value="'.$p->id.'" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
+           </label>
+       </div>';
+            $token=$request->session()->token();
+             $action='<form action="" method="post" style="margin-right: 110px;">
+             '.$csrf.'
+            <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
+             <input type="hidden" value="'.$product->category->id.'" name="category_id" />
+                 <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
+                     <option value="0">select status</option>
+                     <option value="3">Done</option>
+                </select>
+                 <input type="submit"  style="height:20px;margin-left:10px" onclick="ajaxSave(this.val)" class="btn btn-submit1 btn-primary" value="Submit"/>
+         
+             </form>';
+            $data['data'][] = array($check,$p->sku, $p->color, $ca->name, 'Done', $action);
+        }
+
+       
+      }else{
+        $data['data'][] = array('','','', '', '', '', '');
+      }
     echo json_encode($data);
     exit;
 }

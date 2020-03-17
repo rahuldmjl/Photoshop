@@ -25,7 +25,10 @@ public function getProduct()
   $data=array('status'=>$status);
   return psd::where('product_id','=',$productid)->update($data);
   }
+public static function checkpsdproduct($productid){
 
+  return psd::where('product_id',$productid)->exists();
+}
   public static function delete_from_below_department($product_id)
   {   
     
@@ -33,14 +36,15 @@ public function getProduct()
     EditingModel::where('product_id','=',$product_id)->delete();
     jpegModel::where('product_id','=',$product_id)->delete();
       
-   
-  
-  
-  }
+   }
   public static function getUpdatestatus_psd($productid)
   {
       $data=array('next_department_status'=>'0');
      
       return psd::where('product_id','=',$productid)->update($data);
   }
+  public static function inserttojson($data){
+    
+    return psd::insert($data);
+   }
 }

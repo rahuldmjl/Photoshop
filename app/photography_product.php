@@ -46,4 +46,5 @@ class photography_product extends Model
    {
        return photography_product::all();
    }
+  
 }

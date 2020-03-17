@@ -24,7 +24,10 @@ class photography extends Model
  {
      return $this->hasOne('App\category','entity_id','category_id');
  }
+public static function checkexist($product_id){
 
+  return photography::where('product_id','=',$product_id)->exists();
+}
  public static function update_photography_status($productid,$status)
  {
   $data=array('status'=>$status);
@@ -70,7 +73,7 @@ class photography extends Model
     return photography::where('product_id','=',$product_id)->delete();
   }
  public static function inserttojson($data){
-
+    
   return photography::insert($data);
  }
 }

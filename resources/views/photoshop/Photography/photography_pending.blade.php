@@ -166,6 +166,7 @@
                               <div style="float:left" class="widget-heading clearfix">
                           
                               <select style="float:left" id="bulk_status_change_status" class="form-control" name="status">
+                                
                                 <option value="2">Pending</option>
                                 <option value="1">In processing</option>
                                 <option value="3">Done</option>
@@ -328,7 +329,7 @@ $('#bulk_status_change').click(function(){
              
             success: function (data) {
               var res = JSON.parse(data);
-             
+             console.log(data);
              if(res.status=="success"){
              swal({
 									title: 'Success',
@@ -337,17 +338,30 @@ $('#bulk_status_change').click(function(){
 									buttonClass: 'btn btn-primary'
 								  });
 								
-              
+                  table.draw();
              }
-             table.draw();
+             if(res.status=="fail"){
+              swal({
+									title: 'Error',
+									text: res.message,
+									type: 'warning',
+									buttonClass: 'btn btn-primary'
+								  });
+             }
              
             },
             error: function (data) {
                 console.log('Error:', data);
             }
         });
-     }else{
-     alert("Select Done Proper Data")
+     }
+     else{
+      swal({
+									title: 'Error',
+									text: 'Select Done Status',
+									type: 'warning',
+									buttonClass: 'btn btn-primary'
+								  });
     }
 
 });

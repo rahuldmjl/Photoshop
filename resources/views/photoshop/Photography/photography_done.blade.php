@@ -108,12 +108,10 @@
 							  <div class="col-md-6 col-sm-6 widget-holder widget-full-height">
 								<form action="javascript:void(0)" method="post">
 								  <div style="float:left">
-							  
 								  <select style="float:left;width: 506px;" id="bulk_status_change_status" class="form-control" name="status">
-									<option value="0">Pending</option>
+									<option value="0">Select Status</option>
 									<option value="4">Rework</option>
-								
-								  </select>
+								 </select>
 								</div>
 								<div style="float:left">
 							  
@@ -284,8 +282,7 @@ $('#bulk_status_change').click(function(){
 			var res = JSON.parse(data);
              console.log(data)
              if(res.status=="success"){
-		     hideLoader();
-	
+		     
              swal({
 									title: 'Success',
 									text: res.message,
@@ -295,14 +292,14 @@ $('#bulk_status_change').click(function(){
 								  table.draw();	
               
              }else{
-				hideLoader();
+				
 				swal({
 									title: 'Select Product',
 									text: res.message,
 									type: 'error',
 									buttonClass: 'btn btn-primary'
-								  });
-			 }
+			 					  });
+			    }
 			
 			 
 			}
@@ -363,8 +360,7 @@ var table=$('#photographydonelist').DataTable({
   "serverMethod": "post",
   "ajax":{
 	"url": $("#donelistproductajax").val(),
-	
-    "data": function(data, callback){
+	"data": function(data, callback){
 		data._token = "{{ csrf_token() }}";
 		var category = $('#category').children("option:selected").val();
     if(category != ''){
