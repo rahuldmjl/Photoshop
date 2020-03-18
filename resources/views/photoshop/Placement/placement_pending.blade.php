@@ -221,7 +221,7 @@
   <!-- /.widget-list -->
 </main>
 <!-- /.main-wrappper -->
-
+<input type="hidden" id="pendinglistproductajax" value="<?=URL::to('/Photoshop/Placement/getdatatableajaxlist/pending');?>">
 <style type="text/css">
 .form-control[readonly] {background-color: #fff;}
 </style>
@@ -250,6 +250,63 @@
             }
         }
 	};
+	$('#bulk_status_change').click(function(){
+  var action = $('#bulk_status_change_status option:selected').val();
+  var favorite = [];
+  if(action=='3'){
+   
+            $.each($("input[name='chkProduct']:checked"), function(){
+                favorite.push($(this).val());
+            });
+            $.ajax({
+            type: 'POST',
+            url: "{{route('placementchangeajaxlist')}}",
+            data: {action :action,status: favorite,"_token": "{{ csrf_token() }}"},
+            dataType: 'html',
+             
+            success: function (data) {
+              var res = JSON.parse(data);
+            
+             if(res.action=="1"){
+             swal({
+									title: 'Success',
+									text: res.message,
+									type: 'success',
+									buttonClass: 'btn btn-danger'
+								  });
+								  table.draw();
+              
+             }
+			 if(res.action=='0'){
+				swal({
+									title: 'Error',
+									text: 'Select the Product  Done',
+									type: 'warning',
+									buttonClass: 'btn btn-danger'
+								  });
+			 }
+            
+             
+			 console.log(data);
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+     }else{
+        swal({
+									title: 'Error',
+									text: 'Select Status Done',
+									type: 'warning',
+									buttonClass: 'btn btn-danger'
+								  });
+								
+    }
+
+});
+	$("#chkAllProduct").click(function(){
+    $('.chkProduct').prop('checked', this.checked);
+});
 var table=$('#placementpending').DataTable({
 	"dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
   "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
@@ -261,7 +318,7 @@ var table=$('#placementpending').DataTable({
 	$.extend( true, {}, buttonCommon, {
       extend: 'csv',
       footer: false,
-      title: 'Photography-product-list',
+      title: 'placement-pending-list',
       className: "btn btn-primary btn-sm px-3",
       exportOptions: {
           columns: [0,1,2,3],
@@ -271,7 +328,7 @@ var table=$('#placementpending').DataTable({
 	$.extend( true, {}, buttonCommon, {
       extend: 'excel',
       footer: false,
-      title: 'Photography-product-list',
+      title: 'placement-pending-list',
       className: "btn btn-primary btn-sm px-3",
       exportOptions: {
           columns: [0,1,2,3],
@@ -292,7 +349,49 @@ var table=$('#placementpending').DataTable({
   "processing": true,
   "serverSide": true,
   "searching": false,
-  "serverMethod": "post"
+  "serverMethod": "post",
+  "ajax":{
+	"url": $("#pendinglistproductajax").val(),
+	"data": function(data, callback){
+		data._token = "{{ csrf_token() }}";
+		var category = $('#category').children("option:selected").val();
+    if(category != ''){
+      data.category = category;
+    }
+	 console.log(data);
+        showLoader();
+	
+	},
+	complete: function(response){
+      hideLoader();
+	}
+
+  }
 });
+$('#searchfilter').click(function(){
+    table.draw();
+  });
+  $('#reset').click(function(){
+	$('#sku').val('');
+	$('#category option[value=""]').attr('selected','selected');
+	$('#color option[value=""]').attr('selected','selected');
+
+	$('#category').on('change', function() {
+      if(this.value == ''){
+        $('#category option[value=""]').attr('selected','selected');
+      }else{
+        $('#category option[value=""]').removeAttr('selected','selected');
+      }
+	});
+	$('#color').on('change', function() {
+      if(this.value == ''){
+        $('#color option[value=""]').attr('selected','selected');
+      }else{
+        $('#color option[value=""]').removeAttr('selected','selected');
+      }
+	});
+
+	table.draw();
+  });
 </script>
 @endsection

@@ -31,7 +31,12 @@ public static function getDepartment($url)
     $depart=explode('/',$url[1]);
     return $depart[0];
 }
-
+public static function getDepartmentwise($url)
+{
+    $url=explode('getdatatableajaxlist/',$url);
+    $depart=explode('/',$url[1]);
+    return $depart[0];
+}
 
 public static function get_status($name)
 {

@@ -773,6 +773,10 @@ Route::get('Photoshop/Placement/rework','PlacementController@get_placement_rewor
 Route::post('Photoshop/Placement/pending','PlacementController@get_pending_list_data_submit')->name('placement_pending_submit');
 Route::post('Photoshop/Placement/done','PlacementController@submit_done_list')->name('placement_done');
 Route::post('Photoshop/Placement/rework','PlacementController@submit_done_list')->name('placement_done');
+Route::post('Photoshop/Placement/getdatatableajaxlist/pending','PlacementController@get_pending_ajax_list')->name('get_ajax_list');
+Route::post('Photoshop/Placement/getdatatableajaxlist/done','PlacementController@get_pending_ajax_list')->name('get_ajax_list_done');
+Route::post('Photoshop/Placement/getdatatableajaxlist/rework','PlacementController@get_pending_ajax_list')->name('get_ajax_list_rework');
+Route::post('Photoshop/Placement/Status_change','PlacementController@Status_change')->name('placementchangeajaxlist');
 /*
 Editing Department Routing
 */
@@ -782,6 +786,10 @@ Route::get('Photoshop/Editing/rework','EditingController@get_rework_list_editing
 Route::post('Photoshop/Editing/pending','EditingController@get_pending_submit_editing')->name('editing.pending');
 Route::post('Photoshop/Editing/done','EditingController@submit_done_list_editng')->name('editing.done');
 Route::post('Photoshop/Editing/rework','EditingController@submit_done_list_editng')->name('editing.rework');
+Route::post('Photoshop/Editing/getdatatableajaxlist/pending','EditingController@get_pending_ajax_list')->name('get_ajax_list_editing');
+Route::post('Photoshop/Editing/getdatatableajaxlist/done','EditingController@get_pending_ajax_list')->name('get_ajax_list_editing_done');
+Route::post('Photoshop/Editing/getdatatableajaxlist/rework','EditingController@get_pending_ajax_list')->name('get_ajax_list_editing_rework');
+
 /*
 JPEG Department Routing
 */

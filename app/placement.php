@@ -53,4 +53,12 @@ public static function getUpdatestatusrework($productid)
     $data=array('next_department_status'=>'0');
     return psd::where('product_id','=',$productid)->update($data);
 }
+public static function checkpsdproduct($productid){
+
+  return placement::where('product_id',$productid)->exists();
+}
+public static function inserttojson($data){
+    
+  return placement::insert($data);
+ }
 }

@@ -43,6 +43,11 @@ public static function checkpsdproduct($productid){
      
       return psd::where('product_id','=',$productid)->update($data);
   }
+  public static function getUpdatenextdepartmentdone($productid)
+  {
+      $data=array('next_department_status'=>'1');
+      return psd::where('product_id','=',$productid)->update($data);
+  }
   public static function inserttojson($data){
     
     return psd::insert($data);
